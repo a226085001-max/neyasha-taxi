@@ -17,11 +17,13 @@
             --black: #0a0a0a;
             --dark: #141414;
             --gray: #1f1f1f;
+            --gray-light: #888888;
             --yellow: #ffd700;
             --orange: #ffaa00;
             --white: #ffffff;
-            --gray-light: #888888;
             --vk-blue: #0077ff;
+            --red: #ff4444;
+            --green: #00c851;
         }
 
         body {
@@ -32,14 +34,6 @@
             padding-bottom: calc(80px + env(safe-area-inset-bottom));
         }
 
-        .app {
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 12px;
-            padding-top: calc(12px + env(safe-area-inset-top));
-        }
-
-        /* Loading */
         .loading {
             position: fixed;
             top: 0;
@@ -72,12 +66,26 @@
             to { transform: rotate(360deg); }
         }
 
-        .loading-text {
-            color: var(--gray-light);
-            font-size: 14px;
+        .error-fallback {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--black);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9998;
+            padding: 20px;
+            text-align: center;
         }
 
-        /* Role Switcher */
+        .error-fallback.show {
+            display: flex;
+        }
+
         .role-bar {
             position: fixed;
             top: 0;
@@ -126,6 +134,8 @@
 
         .page {
             display: none;
+            padding: 12px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
         }
 
         .page.active {
@@ -138,13 +148,19 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Header */
-        .header {
+        .card {
             background: var(--dark);
-            border: 1px solid var(--yellow);
+            border: 1px solid var(--gray);
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 12px;
+        }
+
+        .card-yellow {
+            border-color: var(--yellow);
+        }
+
+        .header-card {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -172,7 +188,6 @@
             font-weight: 900;
             color: var(--yellow);
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .brand-text span {
@@ -193,21 +208,19 @@
             color: var(--black);
         }
 
-        /* Earnings Card */
+        .status.offline {
+            background: var(--gray);
+            color: var(--gray-light);
+        }
+
         .earnings {
-            background: var(--dark);
-            border: 2px solid var(--yellow);
-            border-radius: 16px;
-            padding: 24px;
             text-align: center;
-            margin-bottom: 12px;
         }
 
         .earnings-label {
             font-size: 12px;
             color: var(--gray-light);
             text-transform: uppercase;
-            letter-spacing: 1px;
             margin-bottom: 12px;
         }
 
@@ -218,7 +231,6 @@
             font-family: 'SF Mono', monospace;
         }
 
-        /* Stats */
         .stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -243,7 +255,6 @@
             font-size: 9px;
             color: var(--gray-light);
             text-transform: uppercase;
-            margin-bottom: 4px;
         }
 
         .stat-value {
@@ -252,23 +263,12 @@
             font-family: 'SF Mono', monospace;
         }
 
-        /* Section Title */
         .section-title {
             font-size: 14px;
             font-weight: 800;
             color: var(--yellow);
             text-transform: uppercase;
             margin: 16px 0 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Post Cards */
-        .posts {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
         }
 
         .post {
@@ -276,11 +276,13 @@
             border: 1px solid var(--gray);
             border-radius: 16px;
             padding: 16px;
+            margin-bottom: 10px;
             transition: all 0.3s ease;
         }
 
-        .post:hover {
-            border-color: var(--yellow);
+        .post.removing {
+            opacity: 0.3;
+            transform: translateX(-100%);
         }
 
         .post-header {
@@ -317,7 +319,6 @@
         .user-meta h3 {
             font-size: 16px;
             font-weight: 700;
-            margin-bottom: 4px;
         }
 
         .user-rating {
@@ -325,22 +326,15 @@
             color: var(--gray-light);
         }
 
-        .user-rating .stars {
-            color: var(--yellow);
-        }
-
         .post-price {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 900;
             color: var(--yellow);
             font-family: 'SF Mono', monospace;
         }
 
-        .post-route {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 14px;
+        .route {
+            margin-bottom: 12px;
         }
 
         .route-point {
@@ -348,6 +342,7 @@
             align-items: center;
             gap: 10px;
             font-size: 14px;
+            margin-bottom: 8px;
         }
 
         .route-dot {
@@ -355,41 +350,31 @@
             height: 10px;
             border-radius: 50%;
             background: var(--yellow);
-            border: 2px solid var(--black);
-            box-shadow: 0 0 0 2px var(--yellow);
+            flex-shrink: 0;
         }
 
         .route-dot.to {
             background: var(--orange);
-            box-shadow: 0 0 0 2px var(--orange);
         }
 
-        .route-line {
-            width: 2px;
-            height: 16px;
-            background: var(--gray);
-            margin-left: 4px;
+        .post-meta {
+            font-size: 12px;
+            color: var(--gray-light);
+            margin-bottom: 12px;
         }
 
-        .post-type {
+        .post-class {
             display: inline-block;
             font-size: 12px;
             font-weight: 700;
             padding: 6px 12px;
             border-radius: 8px;
             background: var(--gray);
+            color: var(--yellow);
             margin-bottom: 12px;
         }
 
-        .post-type.meter {
-            color: var(--yellow);
-        }
-
-        .post-type.fixed {
-            color: var(--orange);
-        }
-
-        .post-actions {
+        .actions {
             display: flex;
             gap: 8px;
         }
@@ -402,9 +387,17 @@
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
             text-transform: uppercase;
             -webkit-appearance: none;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
         }
 
         .btn-primary {
@@ -418,80 +411,11 @@
             border: 1px solid var(--gray-light);
         }
 
-        /* Active Trip */
-        .trip {
-            background: var(--dark);
-            border: 2px solid var(--yellow);
-            border-radius: 20px;
-            padding: 24px;
-            text-align: center;
-            margin-bottom: 16px;
-        }
-
-        .trip-status {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .pulse-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--yellow);
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        .trip-price {
-            font-size: 56px;
-            font-weight: 900;
-            color: var(--yellow);
-            font-family: 'SF Mono', monospace;
-            margin-bottom: 8px;
-        }
-
-        .trip-passenger {
-            color: var(--gray-light);
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        .trip-controls {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 10px;
-        }
-
-        .btn-large {
-            padding: 18px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 800;
-            cursor: pointer;
-            text-transform: uppercase;
-            -webkit-appearance: none;
-        }
-
-        .btn-start {
-            background: var(--yellow);
-            color: var(--black);
-        }
-
-        .btn-stop {
-            background: var(--gray);
+        .btn-vk {
+            background: var(--vk-blue);
             color: white;
-            border: 1px solid var(--orange);
         }
 
-        /* Passenger Header */
         .passenger-header {
             background: linear-gradient(135deg, var(--vk-blue) 0%, #00c6ff 100%);
             border-radius: 20px;
@@ -510,255 +434,89 @@
             font-weight: 900;
             color: white;
             text-transform: uppercase;
-            letter-spacing: 2px;
         }
 
         .passenger-subtitle {
             font-size: 14px;
             color: rgba(255,255,255,0.9);
-            margin-top: 4px;
         }
 
-        /* Address Input */
-        .address-box {
-            background: var(--dark);
-            border: 1px solid var(--gray);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-
-        .address-row {
-            position: relative;
+        .input-group {
             margin-bottom: 12px;
         }
 
-        .address-row:last-child {
-            margin-bottom: 0;
+        .input-label {
+            font-size: 12px;
+            color: var(--gray-light);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: block;
         }
 
-        .address-icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 18px;
-        }
-
-        .address-input {
+        .input {
             width: 100%;
             background: var(--gray);
             border: 1px solid var(--gray-light);
             color: white;
-            padding: 16px 16px 16px 46px;
+            padding: 16px;
             border-radius: 12px;
             font-size: 15px;
-            font-weight: 500;
             outline: none;
             -webkit-appearance: none;
-            transition: all 0.2s ease;
         }
 
-        .address-input:focus {
+        .input:focus {
             border-color: var(--vk-blue);
         }
 
-        .swap-btn {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--yellow);
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
+        .class-selector {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            -webkit-appearance: none;
-            transition: transform 0.2s ease;
-        }
-
-        .swap-btn:active {
-            transform: translateY(-50%) rotate(180deg);
-        }
-
-        /* Tariffs */
-        .tariffs {
+            gap: 8px;
             margin-bottom: 16px;
         }
 
-        .tariffs-label {
-            font-size: 13px;
-            color: var(--gray-light);
-            text-transform: uppercase;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-
-        .tariff-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .tariff {
-            background: var(--dark);
-            border: 1px solid var(--gray);
-            border-radius: 16px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .tariff.selected {
-            border-color: var(--vk-blue);
-        }
-
-        .tariff.custom-selected {
-            border-color: var(--orange);
-        }
-
-        .tariff-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 14px;
+        .class-btn {
+            flex: 1;
+            padding: 16px 8px;
             background: var(--gray);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
+            border: 2px solid var(--gray-light);
+            border-radius: 12px;
+            color: var(--gray-light);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            -webkit-appearance: none;
             transition: all 0.2s ease;
         }
 
-        .tariff.selected .tariff-icon {
-            background: var(--vk-blue);
+        .class-btn.active {
+            border-color: var(--yellow);
+            color: var(--yellow);
+            background: rgba(255, 215, 0, 0.1);
         }
 
-        .tariff.custom-selected .tariff-icon {
-            background: var(--orange);
-        }
-
-        .tariff-info {
-            flex: 1;
-        }
-
-        .tariff-name {
-            font-size: 17px;
-            font-weight: 700;
+        .class-btn .emoji {
+            font-size: 24px;
+            display: block;
             margin-bottom: 4px;
         }
 
-        .tariff-desc {
-            font-size: 12px;
+        .hint {
+            font-size: 13px;
             color: var(--gray-light);
-        }
-
-        .tariff-price {
-            font-size: 20px;
-            font-weight: 900;
-            color: var(--vk-blue);
-            font-family: 'SF Mono', monospace;
-        }
-
-        /* Custom Price Input */
-        .custom-price {
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 1px solid var(--gray);
-            display: none;
-        }
-
-        .tariff.custom-selected .custom-price {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .price-input-wrap {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-
-        .price-input {
-            flex: 1;
-            background: var(--gray);
-            border: 1px solid var(--gray-light);
-            color: white;
-            padding: 14px 16px;
-            border-radius: 12px;
-            font-size: 28px;
-            font-weight: 900;
-            font-family: 'SF Mono', monospace;
-            text-align: center;
-            outline: none;
-            -webkit-appearance: none;
-            transition: all 0.2s ease;
-        }
-
-        .price-input:focus {
-            border-color: var(--orange);
-        }
-
-        .currency {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--gray-light);
-        }
-
-        .quick-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-
-        .quick-btn {
+            margin-top: 12px;
             padding: 12px;
             background: var(--gray);
-            border: 1px solid var(--gray-light);
-            border-radius: 10px;
-            color: white;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            -webkit-appearance: none;
-            transition: all 0.2s ease;
+            border-radius: 12px;
+            line-height: 1.5;
         }
 
-        .quick-btn.minus {
-            color: #ff4444;
-            border-color: #ff4444;
+        .hint-icon {
+            color: var(--yellow);
+            margin-right: 4px;
         }
 
-        .quick-btn.plus {
-            color: var(--orange);
-            border-color: var(--orange);
-        }
-
-        .quick-btn:active {
-            transform: scale(0.95);
-        }
-
-        .price-hint {
-            font-size: 12px;
-            color: var(--gray-light);
-            text-align: center;
-            margin-top: 12px;
-        }
-
-        /* Main Button */
         .search-btn {
             width: 100%;
             padding: 22px;
@@ -771,20 +529,19 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             cursor: pointer;
-            margin-bottom: 16px;
+            margin-top: 16px;
             -webkit-appearance: none;
-            transition: all 0.2s ease;
         }
 
         .search-btn:active {
             transform: scale(0.98);
         }
 
-        .search-btn.custom {
-            background: linear-gradient(135deg, var(--orange) 0%, #ff8533 100%);
+        .search-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
-        /* Bottom Nav */
         .nav {
             position: fixed;
             bottom: 0;
@@ -809,7 +566,9 @@
             font-size: 10px;
             font-weight: 600;
             padding: 4px 16px;
-            transition: all 0.2s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
         }
 
         .nav-item.active {
@@ -823,505 +582,559 @@
         .nav-icon {
             font-size: 24px;
         }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            color: var(--gray-light);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-light);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--dark);
+            border: 1px solid var(--yellow);
+            color: var(--white);
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, var(--gray) 25%, #2a2a2a 50%, var(--gray) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
     </style>
+<base target="_blank">
 </head>
 <body>
-    <!-- Loading -->
     <div class="loading" id="loading">
         <div class="spinner"></div>
-        <div class="loading-text">НЕЯША загружается...</div>
+        <div>НЕЯША загружается...</div>
     </div>
 
-    <!-- Role Switcher -->
+    <div class="error-fallback" id="errorFallback">
+        <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+        <h2 style="margin-bottom: 12px;">Что-то пошло не так</h2>
+        <p style="color: var(--gray-light); margin-bottom: 24px;">Попробуйте перезагрузить приложение</p>
+        <button class="btn btn-primary" onclick="location.reload()">Перезагрузить</button>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
     <div class="role-bar">
-        <button class="role-btn active" onclick="switchRole('driver')">
-            <span>🚕</span> Водитель
-        </button>
-        <button class="role-btn passenger" onclick="switchRole('passenger')">
-            <span>👤</span> Пассажир
-        </button>
+        <button class="role-btn active" onclick="setRole('driver')">🚕 Водитель</button>
+        <button class="role-btn passenger" onclick="setRole('passenger')">👤 Пассажир</button>
     </div>
 
-    <!-- Content -->
     <div class="content">
         <!-- DRIVER PAGE -->
         <div id="driverPage" class="page active">
-            <div class="app">
-                <div class="header">
-                    <div class="brand">
-                        <div class="brand-icon">🚕</div>
-                        <div class="brand-text">
-                            <h1>НЕЯША</h1>
-                            <span>Такси без комиссии</span>
-                        </div>
-                    </div>
-                    <div class="status online">Онлайн</div>
-                </div>
-
-                <div class="earnings">
-                    <div class="earnings-label">Заработано сегодня</div>
-                    <div class="earnings-value">4,250 ₽</div>
-                </div>
-
-                <div class="stats">
-                    <div class="stat">
-                        <div class="stat-icon">🚗</div>
-                        <div class="stat-label">Поездки</div>
-                        <div class="stat-value">12</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-icon">⏱️</div>
-                        <div class="stat-label">Часы</div>
-                        <div class="stat-value">8.5</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-icon">⭐</div>
-                        <div class="stat-label">Рейтинг</div>
-                        <div class="stat-value">4.9</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-icon">💰</div>
-                        <div class="stat-label">Чаевые</div>
-                        <div class="stat-value">350</div>
+            <div class="card header-card">
+                <div class="brand">
+                    <div class="brand-icon">🚕</div>
+                    <div class="brand-text">
+                        <h1>НЕЯША</h1>
+                        <span>Такси без комиссии</span>
                     </div>
                 </div>
+                <div class="status online" id="driverStatus">Онлайн</div>
+            </div>
 
-                <div class="section-title">📋 Объявления рядом</div>
-                <div class="posts" id="postsList"></div>
+            <div class="card card-yellow earnings">
+                <div class="earnings-label">Заработано сегодня</div>
+                <div class="earnings-value" id="earningsValue">0 ₽</div>
+            </div>
 
-                <!-- Active Trip -->
-                <div class="trip" id="activeTrip" style="display: none;">
-                    <div class="trip-status">
-                        <div class="pulse-dot"></div>
-                        <span style="color: var(--yellow); font-weight: 700;">ПОЕЗДКА</span>
-                    </div>
-                    <div class="trip-price" id="tripPrice">0 ₽</div>
-                    <div class="trip-passenger">
-                        <span id="passengerName">Иван</span> 
-                        <span id="passengerRating">⭐ 4.8 (12)</span>
-                    </div>
-                    <div class="trip-controls">
-                        <button class="btn-large btn-start" id="startBtn" onclick="toggleTrip()">НАЧАТЬ</button>
-                        <button class="btn-large btn-stop" onclick="endTrip()">ЗАВЕРШИТЬ</button>
-                    </div>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-icon">🚗</div>
+                    <div class="stat-label">Поездки</div>
+                    <div class="stat-value" id="tripsCount">0</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-label">Часы</div>
+                    <div class="stat-value" id="hoursCount">0</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-label">Рейтинг</div>
+                    <div class="stat-value" id="ratingValue">5.0</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-label">Чаевые</div>
+                    <div class="stat-value" id="tipsCount">0</div>
+                </div>
+            </div>
+
+            <div class="section-title">📋 Объявления рядом</div>
+            <div id="driverPosts">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🔄</div>
+                    <div>Загрузка объявлений...</div>
                 </div>
             </div>
         </div>
 
         <!-- PASSENGER PAGE -->
         <div id="passengerPage" class="page">
-            <div class="app">
-                <div class="passenger-header">
-                    <div class="passenger-logo">👋</div>
-                    <div class="passenger-title">НЕЯША</div>
-                    <div class="passenger-subtitle">Такси без комиссии</div>
+            <div class="passenger-header">
+                <div class="passenger-logo">👋</div>
+                <div class="passenger-title">НЕЯША</div>
+                <div class="passenger-subtitle">Такси без комиссии</div>
+            </div>
+
+            <div class="card">
+                <div class="form-group">
+                    <label class="form-label">Откуда</label>
+                    <input type="text" class="input" id="fromAddr" placeholder="Улица, дом" maxlength="100">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Куда</label>
+                    <input type="text" class="input" id="toAddr" placeholder="Улица, дом" maxlength="100">
+                </div>
+            </div>
+
+            <div class="card">
+                <label class="form-label">Класс автомобиля</label>
+                <div class="class-selector">
+                    <button class="class-btn active" onclick="setClass('econom', this)">
+                        <span class="emoji">🚕</span>
+                        Эконом
+                    </button>
+                    <button class="class-btn" onclick="setClass('comfort', this)">
+                        <span class="emoji">🚗</span>
+                        Комфорт
+                    </button>
+                    <button class="class-btn" onclick="setClass('comfortplus', this)">
+                        <span class="emoji">⭐</span>
+                        Комфорт+
+                    </button>
                 </div>
 
-                <div class="address-box">
-                    <div class="address-row">
-                        <span class="address-icon" style="color: var(--vk-blue);">📍</span>
-                        <input type="text" class="address-input" id="fromAddr" value="ул. Ленина, 25" placeholder="Откуда едем?">
-                        <button class="swap-btn" onclick="swapAddress()">⇅</button>
-                    </div>
-                    <div style="height: 10px;"></div>
-                    <div class="address-row">
-                        <span class="address-icon" style="color: var(--orange);">🎯</span>
-                        <input type="text" class="address-input" id="toAddr" value="ул. Гагарина, 42" placeholder="Куда едем?">
-                    </div>
+                <div class="form-group" style="margin-top: 16px;">
+                    <label class="form-label">Ваша цена (₽)</label>
+                    <input type="number" class="input" id="priceInput" placeholder="Например: 300" min="50" max="50000">
                 </div>
 
-                <div class="tariffs">
-                    <div class="tariffs-label">Выберите тариф</div>
-                    <div class="tariff-list">
-                        <div class="tariff selected" onclick="selectTariff('meter', this)">
-                            <div class="tariff-icon">🚕</div>
-                            <div class="tariff-info">
-                                <div class="tariff-name">По счётчику</div>
-                                <div class="tariff-desc">Цена растёт во время поездки</div>
-                            </div>
-                            <div class="tariff-price">~180₽</div>
-                        </div>
-
-                        <div class="tariff" onclick="selectTariff('fixed', this)">
-                            <div class="tariff-icon">💰</div>
-                            <div class="tariff-info">
-                                <div class="tariff-name">Своя цена</div>
-                                <div class="tariff-desc">Фиксированная сумма</div>
-                            </div>
-                            <div class="tariff-price" id="fixedPriceLabel">200₽</div>
-
-                            <div class="custom-price">
-                                <div class="price-input-wrap">
-                                    <input type="number" class="price-input" id="priceInput" value="200" min="50" max="5000" oninput="updatePrice(this.value)">
-                                    <span class="currency">₽</span>
-                                </div>
-                                <div class="quick-buttons">
-                                    <button class="quick-btn minus" onclick="changePrice(-50)">−50</button>
-                                    <button class="quick-btn minus" onclick="changePrice(-100)">−100</button>
-                                    <button class="quick-btn minus" onclick="changePrice(-500)">−500</button>
-                                    <button class="quick-btn plus" onclick="changePrice(50)">+50</button>
-                                    <button class="quick-btn plus" onclick="changePrice(100)">+100</button>
-                                    <button class="quick-btn plus" onclick="changePrice(500)">+500</button>
-                                </div>
-                                <div class="price-hint">Минимум 50₽ • Максимум 5000₽</div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="hint">
+                    <span class="hint-icon">💡</span>
+                    <strong>Как это работает:</strong><br>
+                    1. Откройте Яндекс.Такси и узнайте цену<br>
+                    2. Введите эту сумму здесь (без комиссии!)<br>
+                    3. Водитель приедет за этой ценой
                 </div>
 
-                <button class="search-btn" id="searchBtn" onclick="createPost()">ПОИСК</button>
+                <button class="search-btn" id="createOrderBtn" onclick="createOrder()">СОЗДАТЬ ЗАКАЗ</button>
             </div>
         </div>
     </div>
 
-    <!-- Bottom Nav -->
     <div class="nav">
-        <a href="#" class="nav-item active" onclick="setNav(this)">
-            <span class="nav-icon">🏠</span>
-            <span>Главная</span>
-        </a>
-        <a href="#" class="nav-item" onclick="setNav(this)">
-            <span class="nav-icon">📋</span>
-            <span>Объявления</span>
-        </a>
-        <a href="#" class="nav-item" onclick="setNav(this)">
-            <span class="nav-icon">💵</span>
-            <span>Заработок</span>
-        </a>
-        <a href="#" class="nav-item" onclick="setNav(this)">
-            <span class="nav-icon">⭐</span>
-            <span>Рейтинг</span>
-        </a>
+        <button class="nav-item active" onclick="setNav(this, 'home')">🏠<span>Главная</span></button>
+        <button class="nav-item" onclick="setNav(this, 'orders')">📋<span>Заказы</span></button>
+        <button class="nav-item" onclick="setNav(this, 'earnings')">💵<span>Заработок</span></button>
+        <button class="nav-item" onclick="setNav(this, 'profile')">⭐<span>Профиль</span></button>
     </div>
 
     <script>
-        // VK Bridge init
-        vkBridge.send('VKWebAppInit');
-        setTimeout(() => document.getElementById('loading').classList.add('hidden'), 800);
-
-        // State
-        let role = 'driver';
-        let tripActive = false;
-        let tripTimer = null;
-        let currentPrice = 0;
-        let selectedTariff = 'meter';
-        let fixedPrice = 200;
+        // Глобальные переменные
+        let currentRole = 'driver';
+        let currentClass = 'econom';
         let userId = null;
-        let userName = 'Иван';
+        let userName = 'Гость';
+        let userPhoto = null;
+        let vkBridgeAvailable = false;
 
-        // Mock posts data
-        const posts = [
+        // Мок-данные для демо (в проде заменить на API)
+        const mockPosts = [
             {
                 id: 1,
-                type: 'meter',
-                userId: 123456,
-                userName: 'Мария',
-                userPhoto: '',
-                rating: 4.9,
-                trips: 24,
-                price: 0,
-                label: 'По счётчику',
+                userId: 12345,
+                userName: 'Анна',
+                userPhoto: null,
+                rating: 4.8,
+                trips: 12,
                 from: 'ул. Ленина, 25',
                 to: 'ул. Гагарина, 42',
-                distance: '2.5 км',
-                time: '5 мин'
+                price: 280,
+                carClass: 'econom',
+                createdAt: Date.now() - 300000
             },
             {
                 id: 2,
-                type: 'fixed',
-                userId: 789012,
-                userName: 'Алексей',
-                userPhoto: '',
-                rating: 4.7,
-                trips: 8,
-                price: 150,
-                label: '150₽',
+                userId: 67890,
+                userName: 'Михаил',
+                userPhoto: null,
+                rating: 4.9,
+                trips: 45,
                 from: 'пр. Мира, 10',
-                to: 'ул. Советская, 5',
-                distance: '1.8 км',
-                time: '4 мин'
+                to: 'ТЦ "Галерея"',
+                price: 450,
+                carClass: 'comfort',
+                createdAt: Date.now() - 600000
             },
             {
                 id: 3,
-                type: 'meter',
-                userId: 345678,
-                userName: 'Ольга',
-                userPhoto: '',
+                userId: 11111,
+                userName: 'Елена',
+                userPhoto: null,
                 rating: 5.0,
-                trips: 156,
-                price: 0,
-                label: 'По счётчику',
+                trips: 8,
                 from: 'ул. Пушкина, 15',
-                to: 'ул. Лермонтова, 8',
-                distance: '4.2 км',
-                time: '12 мин'
-            },
-            {
-                id: 4,
-                type: 'fixed',
-                userId: 901234,
-                userName: 'Дмитрий',
-                userPhoto: '',
-                rating: 4.5,
-                trips: 3,
-                price: 100,
-                label: '100₽',
-                from: 'ул. Горького, 7',
-                to: 'ул. Чехова, 3',
-                distance: '1.2 км',
-                time: '3 мин'
+                to: 'Аэропорт',
+                price: 1200,
+                carClass: 'comfortplus',
+                createdAt: Date.now() - 900000
             }
         ];
 
-        // Get user info
-        vkBridge.send('VKWebAppGetUserInfo').then(data => {
-            userId = data.id;
-            userName = data.first_name;
-            console.log('User:', userName, userId);
-        }).catch(() => {});
+        // Инициализация VK Bridge с защитой
+        async function initVK() {
+            try {
+                if (typeof vkBridge !== 'undefined') {
+                    await vkBridge.send('VKWebAppInit');
+                    vkBridgeAvailable = true;
 
-        // Init
-        document.addEventListener('DOMContentLoaded', () => {
-            renderPosts();
-        });
+                    // Получаем данные пользователя
+                    try {
+                        const userData = await vkBridge.send('VKWebAppGetUserInfo');
+                        userId = userData.id;
+                        userName = userData.first_name;
+                        userPhoto = userData.photo_100;
+                    } catch (e) {
+                        console.log('Не удалось получить данные пользователя:', e);
+                    }
 
-        // Render posts
-        function renderPosts() {
-            const container = document.getElementById('postsList');
-            container.innerHTML = posts.map(p => `
-                <div class="post">
+                    // Виброотклик при старте (легкий)
+                    taptic('light');
+                }
+            } catch (e) {
+                console.log('VK Bridge недоступен:', e);
+                vkBridgeAvailable = false;
+            }
+
+            // Скрываем загрузку
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+                renderDriverPosts();
+            }, 500);
+        }
+
+        // Безопасный вызов виброотклика
+        function taptic(style = 'light') {
+            if (!vkBridgeAvailable) return;
+            try {
+                vkBridge.send('VKWebAppTapticImpactOccurred', { style });
+            } catch (e) {}
+        }
+
+        // Безопасное уведомление
+        function showNotification(message) {
+            if (vkBridgeAvailable) {
+                try {
+                    vkBridge.send('VKWebAppShowNotification', { message });
+                    return;
+                } catch (e) {}
+            }
+            // Fallback на toast
+            showToast(message);
+        }
+
+        // Показать toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Открыть VK профиль/чат
+        function openVKProfile(userId) {
+            if (!vkBridgeAvailable) {
+                showToast('Откройте профиль вручную в VK');
+                return;
+            }
+
+            try {
+                // Пытаемся открыть чат
+                vkBridge.send('VKWebAppOpenChat', { user_id: userId });
+            } catch (e) {
+                // Fallback на открытие профиля
+                try {
+                    vkBridge.send('VKWebAppOpenProfile', { user_id: userId });
+                } catch (e2) {
+                    // Последний fallback — ссылка
+                    const link = `https://vk.com/id${userId}`;
+                    vkBridge.send('VKWebAppOpenLink', { link });
+                }
+            }
+            taptic('medium');
+        }
+
+        // Рендер объявлений для водителя
+        function renderDriverPosts() {
+            const container = document.getElementById('driverPosts');
+
+            if (mockPosts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <div>Пока нет объявлений рядом</div>
+                        <div style="font-size: 13px; margin-top: 8px;">Попробуйте обновить позже</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = mockPosts.map(p => `
+                <div class="post" id="post-${p.id}">
                     <div class="post-header">
                         <div class="user-info">
-                            <div class="user-avatar">${p.userPhoto ? `<img src="${p.userPhoto}" alt="">` : '👤'}</div>
+                            <div class="user-avatar">
+                                ${p.userPhoto ? `<img src="${p.userPhoto}" alt="">` : '👤'}
+                            </div>
                             <div class="user-meta">
-                                <h3>${p.userName}</h3>
-                                <div class="user-rating">
-                                    <span class="stars">⭐</span> ${p.rating} (${p.trips} поездок)
-                                </div>
+                                <h3>${escapeHtml(p.userName)}</h3>
+                                <div class="user-rating">⭐ ${p.rating} • ${p.trips} поездок</div>
                             </div>
                         </div>
-                        <div class="post-price">${p.type === 'fixed' ? p.label : '—'}</div>
+                        <div class="post-price">${p.price} ₽</div>
                     </div>
-                    
-                    <div class="post-type ${p.type}">${p.type === 'meter' ? '🚕 По счётчику' : '💰 Фикс: ' + p.label}</div>
-                    
-                    <div class="post-route">
-                        <div class="route-point">
-                            <div class="route-dot"></div>
-                            <span>${p.from}</span>
-                        </div>
-                        <div class="route-line"></div>
-                        <div class="route-point">
-                            <div class="route-dot to"></div>
-                            <span>${p.to}</span>
-                        </div>
+                    <div class="post-class">${getClassEmoji(p.carClass)} ${getClassName(p.carClass)}</div>
+                    <div class="route">
+                        <div class="route-point"><div class="route-dot"></div>${escapeHtml(p.from)}</div>
+                        <div class="route-point"><div class="route-dot to"></div>${escapeHtml(p.to)}</div>
                     </div>
-                    
-                    <div style="font-size: 12px; color: var(--gray-light); margin-bottom: 12px;">
-                        ${p.distance} • ${p.time}
-                    </div>
-                    
-                    <div class="post-actions">
+                    <div class="post-meta">${formatTime(p.createdAt)}</div>
+                    <div class="actions">
                         <button class="btn btn-secondary" onclick="skipPost(${p.id})">Пропустить</button>
-                        <button class="btn btn-primary" onclick="contactUser(${p.userId}, '${p.userName}')">Связаться</button>
+                        <button class="btn btn-primary btn-vk" onclick="contactPassenger(${p.userId}, '${escapeHtml(p.userName)}')">Написать</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Switch role
-        function switchRole(newRole) {
-            role = newRole;
+        // Экранирование HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Форматирование времени
+        function formatTime(timestamp) {
+            const diff = Math.floor((Date.now() - timestamp) / 1000);
+            if (diff < 60) return 'Только что';
+            if (diff < 3600) return `${Math.floor(diff / 60)} мин назад`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)} ч назад`;
+            return `${Math.floor(diff / 86400)} дн назад`;
+        }
+
+        function getClassEmoji(cls) {
+            return cls === 'econom' ? '🚕' : cls === 'comfort' ? '🚗' : '⭐';
+        }
+
+        function getClassName(cls) {
+            return cls === 'econom' ? 'Эконом' : cls === 'comfort' ? 'Комфорт' : 'Комфорт+';
+        }
+
+        // Смена роли
+        function setRole(role) {
+            currentRole = role;
             document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
-            
+            document.querySelectorAll('.nav-item').forEach(n => {
+                n.classList.remove('active', 'passenger-active');
+            });
+
             if (role === 'driver') {
                 document.querySelector('.role-btn:first-child').classList.add('active');
                 document.getElementById('driverPage').classList.add('active');
                 document.getElementById('passengerPage').classList.remove('active');
-                document.querySelectorAll('.nav-item').forEach(n => {
-                    n.classList.remove('passenger-active');
-                    n.classList.add('active');
-                });
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.add('active'));
+                renderDriverPosts();
             } else {
                 document.querySelector('.role-btn.passenger').classList.add('active');
                 document.getElementById('passengerPage').classList.add('active');
                 document.getElementById('driverPage').classList.remove('active');
-                document.querySelectorAll('.nav-item').forEach(n => {
-                    n.classList.remove('active');
-                    n.classList.add('passenger-active');
-                });
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.add('passenger-active'));
             }
-            
-            vkBridge.send('VKWebAppTapticImpactOccurred', { style: 'light' });
+            taptic('light');
         }
 
-        // Select tariff
-        function selectTariff(type, el) {
-            selectedTariff = type;
-            document.querySelectorAll('.tariff').forEach(t => {
-                t.classList.remove('selected', 'custom-selected');
-            });
-            
-            const btn = document.getElementById('searchBtn');
-            
-            if (type === 'fixed') {
-                el.classList.add('custom-selected');
-                btn.classList.add('custom');
-                btn.textContent = 'ПОИСК ' + fixedPrice + '₽';
-                setTimeout(() => document.getElementById('priceInput').focus(), 100);
-            } else {
-                el.classList.add('selected');
-                btn.classList.remove('custom');
-                btn.textContent = 'ПОИСК';
+        // Выбор класса авто
+        function setClass(cls, btn) {
+            currentClass = cls;
+            document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            taptic('light');
+        }
+
+        // Создание заказа пассажиром
+        async function createOrder() {
+            const from = document.getElementById('fromAddr').value.trim();
+            const to = document.getElementById('toAddr').value.trim();
+            const price = document.getElementById('priceInput').value;
+
+            // Валидация
+            if (!from || !to) {
+                showToast('❌ Укажите адреса');
+                taptic('heavy');
+                return;
             }
-            
-            vkBridge.send('VKWebAppTapticImpactOccurred', { style: 'light' });
+
+            if (!price || price < 50) {
+                showToast('❌ Цена должна быть минимум 50 ₽');
+                taptic('heavy');
+                return;
+            }
+
+            if (price > 50000) {
+                showToast('❌ Максимальная цена 50 000 ₽');
+                taptic('heavy');
+                return;
+            }
+
+            // Блокируем кнопку
+            const btn = document.getElementById('createOrderBtn');
+            btn.disabled = true;
+            btn.textContent = 'СОЗДАЁМ...';
+
+            // Имитируем отправку на сервер
+            await new Promise(r => setTimeout(r, 1000));
+
+            // Успех
+            taptic('success');
+            showNotification(`✅ Заказ создан! ${price}₽`);
+            showToast(`Заказ размещён. Ожидайте водителей!`);
+
+            // Сброс формы
+            document.getElementById('fromAddr').value = '';
+            document.getElementById('toAddr').value = '';
+            document.getElementById('priceInput').value = '';
+
+            // Разблокируем кнопку
+            btn.disabled = false;
+            btn.textContent = 'СОЗДАТЬ ЗАКАЗ';
         }
 
-        // Update price
-        function updatePrice(val) {
-            let v = Math.max(50, Math.min(5000, parseInt(val) || 0));
-            fixedPrice = v;
-            document.getElementById('fixedPriceLabel').textContent = v + '₽';
-            if (selectedTariff === 'fixed') {
-                document.getElementById('searchBtn').textContent = 'ПОИСК ' + v + '₽';
+        // Связаться с пассажиром (реальная функция)
+        function contactPassenger(passengerId, passengerName) {
+            taptic('medium');
+
+            if (!vkBridgeAvailable) {
+                showToast(`Напишите ${passengerName} в VK вручную`);
+                return;
+            }
+
+            // Показываем подтверждение
+            if (confirm(`Написать ${passengerName}?
+
+Откроется чат VK`)) {
+                openVKProfile(passengerId);
             }
         }
 
-        // Change price
-        function changePrice(delta) {
-            let v = Math.max(50, Math.min(5000, fixedPrice + delta));
-            document.getElementById('priceInput').value = v;
-            updatePrice(v);
-            vkBridge.send('VKWebAppTapticImpactOccurred', { style: 'light' });
-        }
-
-        // Swap address
-        function swapAddress() {
-            const f = document.getElementById('fromAddr');
-            const t = document.getElementById('toAddr');
-            const tmp = f.value;
-            f.value = t.value;
-            t.value = tmp;
-            vkBridge.send('VKWebAppTapticImpactOccurred', { style: 'light' });
-        }
-
-        // Create post
-        function createPost() {
-            const price = selectedTariff === 'fixed' ? fixedPrice : 0;
-            const from = document.getElementById('fromAddr').value;
-            const to = document.getElementById('toAddr').value;
-            
-            vkBridge.send('VKWebAppTapticNotificationOccurred', { type: 'success' });
-            vkBridge.send('VKWebAppShowNotification', {
-                message: 'Объявление создано! Ожидайте звонка.'
-            });
-            
-            setTimeout(() => {
-                alert(`✅ Объявление создано!\n\n${selectedTariff === 'fixed' ? 'Фикс: ' + price + '₽' : 'По счётчику'}\n${from} → ${to}\n\nВодители видят ваше объявление.`);
-            }, 100);
-        }
-
-        // Contact user (VK Call or Message)
-        function contactUser(targetId, name) {
-            // Try to open VK profile for call/message
-            vkBridge.send('VKWebAppOpenProfile', {
-                user_id: targetId
-            }).then(() => {
-                vkBridge.send('VKWebAppTapticNotificationOccurred', { type: 'success' });
-            }).catch(() => {
-                // Fallback: show contact info
-                alert(`Связаться с ${name}:\n\nVK ID: ${targetId}\n\nОткройте VK и найдите пользователя по ID.`);
-            });
-        }
-
-        // Skip post
+        // Пропустить объявление
         function skipPost(id) {
-            const post = event.target.closest('.post');
-            post.style.opacity = '0.3';
-            post.style.transform = 'translateX(-100%)';
-            vkBridge.send('VKWebAppTapticNotificationOccurred', { type: 'error' });
-            setTimeout(() => post.remove(), 300);
+            const post = document.getElementById(`post-${id}`);
+            if (post) {
+                post.classList.add('removing');
+                taptic('light');
+                setTimeout(() => {
+                    post.remove();
+                    // Если все скрыты, показываем пустое состояние
+                    const remaining = document.querySelectorAll('.post:not(.removing)');
+                    if (remaining.length === 0) {
+                        document.getElementById('driverPosts').innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-state-icon">✅</div>
+                                <div>Все объявления просмотрены</div>
+                                <div style="font-size: 13px; margin-top: 8px;">Новые появятся скоро</div>
+                            </div>
+                        `;
+                    }
+                }, 300);
+            }
         }
 
-        // Start trip (driver accepted post)
-        function startTrip(postId) {
-            const p = posts.find(x => x.id === postId);
-            document.getElementById('activeTrip').style.display = 'block';
-            document.getElementById('postsList').style.display = 'none';
-            
-            currentPrice = p.type === 'fixed' ? p.price : 0;
-            const priceEl = document.getElementById('tripPrice');
-            priceEl.textContent = currentPrice + ' ₽';
-            priceEl.style.color = p.type === 'fixed' ? 'var(--orange)' : 'var(--yellow)';
-            
-            document.getElementById('passengerName').textContent = p.userName;
-            document.getElementById('passengerRating').textContent = `⭐ ${p.rating} (${p.trips})`;
-            
-            vkBridge.send('VKWebAppTapticImpactOccurred', { style: 'heavy' });
-            document.querySelector('.trip').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Toggle trip
-        function toggleTrip() {
-            const btn = document.getElementById('startBtn');
-            
-            if (!tripActive) {
-                tripActive = true;
-                btn.textContent = 'ПАУЗА';
-                btn.style.background = 'var(--orange)';
-                vkBridge.send('VKWebAppTapticImpactOccurred', { style: 'light' });
-                
-                // Only for meter tariff
-                if (selectedTariff !== 'fixed') {
-                    tripTimer = setInterval(() => {
-                        currentPrice += 2;
-                        document.getElementById('tripPrice').textContent = currentPrice + ' ₽';
-                    }, 1000);
+        // Навигация
+        function setNav(el, page) {
+            document.querySelectorAll('.nav-item').forEach(n => {
+                n.classList.remove('active');
+                if (currentRole === 'passenger') {
+                    n.classList.remove('passenger-active');
                 }
-            } else {
-                tripActive = false;
-                btn.textContent = 'ПРОДОЛЖИТЬ';
-                btn.style.background = 'var(--yellow)';
-                clearInterval(tripTimer);
-            }
-        }
-
-        // End trip
-        function endTrip() {
-            clearInterval(tripTimer);
-            tripActive = false;
-            
-            const final = document.getElementById('tripPrice').textContent;
-            vkBridge.send('VKWebAppTapticNotificationOccurred', { type: 'success' });
-            vkBridge.send('VKWebAppShowNotification', {
-                message: 'Поездка завершена! ' + final
             });
-            
-            setTimeout(() => {
-                document.getElementById('activeTrip').style.display = 'none';
-                document.getElementById('postsList').style.display = 'flex';
-                document.getElementById('startBtn').textContent = 'НАЧАТЬ';
-                document.getElementById('startBtn').style.background = 'var(--yellow)';
-                document.getElementById('tripPrice').textContent = '0 ₽';
-                currentPrice = 0;
-            }, 500);
-        }
 
-        // Nav
-        function setNav(el) {
-            event.preventDefault();
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            el.classList.add('active');
-            vkBridge.send('VKWebAppTapticImpactOccurred', { style: 'light' });
-        }
-
-        // VK Events
-        vkBridge.subscribe((e) => {
-            if (e.detail.type === 'VKWebAppUpdateConfig') {
-                console.log('Theme:', e.detail.data.scheme);
+            if (currentRole === 'driver') {
+                el.classList.add('active');
+            } else {
+                el.classList.add('passenger-active');
             }
+
+            taptic('light');
+
+            // Заглушки для страниц
+            if (page !== 'home') {
+                showToast('Раздел в разработке 🚧');
+            }
+        }
+
+        // Глобальная обработка ошибок
+        window.onerror = function(msg, url, line) {
+            console.error('Ошибка:', msg, 'на строке', line);
+            return false;
+        };
+
+        // Защита от падения если VK Bridge не загрузился
+        window.addEventListener('unhandledrejection', function(event) {
+            console.error('Unhandled promise rejection:', event.reason);
         });
+
+        // Старт
+        initVK();
     </script>
 </body>
 </html>
+
+"Обновление: категории авто + фиксы"
