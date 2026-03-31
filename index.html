@@ -66,26 +66,6 @@
             to { transform: rotate(360deg); }
         }
 
-        .error-fallback {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--black);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9998;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .error-fallback.show {
-            display: flex;
-        }
-
         .role-bar {
             position: fixed;
             top: 0;
@@ -206,11 +186,6 @@
         .status.online {
             background: var(--yellow);
             color: var(--black);
-        }
-
-        .status.offline {
-            background: var(--gray);
-            color: var(--gray-light);
         }
 
         .earnings {
@@ -361,6 +336,9 @@
             font-size: 12px;
             color: var(--gray-light);
             margin-bottom: 12px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .post-class {
@@ -502,6 +480,19 @@
             margin-bottom: 4px;
         }
 
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            color: var(--gray-light);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
         .hint {
             font-size: 13px;
             color: var(--gray-light);
@@ -583,19 +574,6 @@
             font-size: 24px;
         }
 
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-label {
-            font-size: 13px;
-            color: var(--gray-light);
-            text-transform: uppercase;
-            font-weight: 700;
-            margin-bottom: 8px;
-            display: block;
-        }
-
         .empty-state {
             text-align: center;
             padding: 40px 20px;
@@ -630,16 +608,17 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        .skeleton {
-            background: linear-gradient(90deg, var(--gray) 25%, #2a2a2a 50%, var(--gray) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 8px;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+        .refresh-btn {
+            background: var(--gray);
+            border: 1px solid var(--gray-light);
+            color: var(--white);
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 16px;
+            width: 100%;
         }
     </style>
 <base target="_blank">
@@ -649,15 +628,6 @@
         <div class="spinner"></div>
         <div>НЕЯША загружается...</div>
     </div>
-
-    <div class="error-fallback" id="errorFallback">
-        <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
-        <h2 style="margin-bottom: 12px;">Что-то пошло не так</h2>
-        <p style="color: var(--gray-light); margin-bottom: 24px;">Попробуйте перезагрузить приложение</p>
-        <button class="btn btn-primary" onclick="location.reload()">Перезагрузить</button>
-    </div>
-
-    <div class="toast" id="toast"></div>
 
     <div class="role-bar">
         <button class="role-btn active" onclick="setRole('driver')">🚕 Водитель</button>
@@ -706,11 +676,14 @@
                 </div>
             </div>
 
-            <div class="section-title">📋 Объявления рядом</div>
+            <div class="section-title">📋 Заказы рядом</div>
+
+            <button class="refresh-btn" onclick="loadOrders()">🔄 Обновить список</button>
+
             <div id="driverPosts">
                 <div class="empty-state">
                     <div class="empty-state-icon">🔄</div>
-                    <div>Загрузка объявлений...</div>
+                    <div>Загрузка заказов...</div>
                 </div>
             </div>
         </div>
@@ -750,18 +723,20 @@
                         Комфорт+
                     </button>
                 </div>
+            </div>
 
-                <div class="form-group" style="margin-top: 16px;">
+            <div class="card">
+                <div class="form-group">
                     <label class="form-label">Ваша цена (₽)</label>
-                    <input type="number" class="input" id="priceInput" placeholder="Например: 300" min="50" max="50000">
+                    <input type="number" class="input" id="priceInput" placeholder="Например: 300" min="50" max="50000" style="font-size: 28px; font-weight: 900; text-align: center; font-family: 'SF Mono', monospace;">
                 </div>
 
                 <div class="hint">
                     <span class="hint-icon">💡</span>
                     <strong>Как это работает:</strong><br>
-                    1. Откройте Яндекс.Такси и узнайте цену, сделайте скриншот<br>
-                    2. Введите эту сумму здесь <br>
-                    3. Покажите водителю скриншот и приятной поездки
+                    1. Откройте Яндекс.Такси и узнайте цену<br>
+                    2. Введите эту сумму здесь (без комиссии!)<br>
+                    3. Покажите скриншот водителю при встрече
                 </div>
 
                 <button class="search-btn" id="createOrderBtn" onclick="createOrder()">СОЗДАТЬ ЗАКАЗ</button>
@@ -776,7 +751,12 @@
         <button class="nav-item" onclick="setNav(this, 'profile')">⭐<span>Профиль</span></button>
     </div>
 
+    <div class="toast" id="toast"></div>
+
     <script>
+        // API URL - замени на свой домен
+        const API_URL = 'http://demo.rentdriver.ru';
+
         // Глобальные переменные
         let currentRole = 'driver';
         let currentClass = 'econom';
@@ -785,82 +765,34 @@
         let userPhoto = null;
         let vkBridgeAvailable = false;
 
-        // Мок-данные для демо (в проде заменить на API)
-        const mockPosts = [
-            {
-                id: 1,
-                userId: 12345,
-                userName: 'Анна',
-                userPhoto: null,
-                rating: 4.8,
-                trips: 12,
-                from: 'ул. Ленина, 25',
-                to: 'ул. Гагарина, 42',
-                price: 280,
-                carClass: 'econom',
-                createdAt: Date.now() - 300000
-            },
-            {
-                id: 2,
-                userId: 67890,
-                userName: 'Михаил',
-                userPhoto: null,
-                rating: 4.9,
-                trips: 45,
-                from: 'пр. Мира, 10',
-                to: 'ТЦ "Галерея"',
-                price: 450,
-                carClass: 'comfort',
-                createdAt: Date.now() - 600000
-            },
-            {
-                id: 3,
-                userId: 11111,
-                userName: 'Елена',
-                userPhoto: null,
-                rating: 5.0,
-                trips: 8,
-                from: 'ул. Пушкина, 15',
-                to: 'Аэропорт',
-                price: 1200,
-                carClass: 'comfortplus',
-                createdAt: Date.now() - 900000
-            }
-        ];
-
-        // Инициализация VK Bridge с защитой
+        // Инициализация VK Bridge
         async function initVK() {
             try {
                 if (typeof vkBridge !== 'undefined') {
                     await vkBridge.send('VKWebAppInit');
                     vkBridgeAvailable = true;
 
-                    // Получаем данные пользователя
                     try {
                         const userData = await vkBridge.send('VKWebAppGetUserInfo');
                         userId = userData.id;
                         userName = userData.first_name;
                         userPhoto = userData.photo_100;
-                    } catch (e) {
-                        console.log('Не удалось получить данные пользователя:', e);
-                    }
+                    } catch (e) {}
 
-                    // Виброотклик при старте (легкий)
                     taptic('light');
                 }
             } catch (e) {
-                console.log('VK Bridge недоступен:', e);
                 vkBridgeAvailable = false;
             }
 
-            // Скрываем загрузку
             setTimeout(() => {
                 document.getElementById('loading').classList.add('hidden');
-                renderDriverPosts();
+                if (currentRole === 'driver') {
+                    loadOrders();
+                }
             }, 500);
         }
 
-        // Безопасный вызов виброотклика
         function taptic(style = 'light') {
             if (!vkBridgeAvailable) return;
             try {
@@ -868,19 +800,6 @@
             } catch (e) {}
         }
 
-        // Безопасное уведомление
-        function showNotification(message) {
-            if (vkBridgeAvailable) {
-                try {
-                    vkBridge.send('VKWebAppShowNotification', { message });
-                    return;
-                } catch (e) {}
-            }
-            // Fallback на toast
-            showToast(message);
-        }
-
-        // Показать toast
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -888,82 +807,104 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // Открыть VK профиль/чат
-        function openVKProfile(userId) {
+        function openVKProfile(targetUserId) {
             if (!vkBridgeAvailable) {
                 showToast('Откройте профиль вручную в VK');
                 return;
             }
 
             try {
-                // Пытаемся открыть чат
-                vkBridge.send('VKWebAppOpenChat', { user_id: userId });
+                vkBridge.send('VKWebAppOpenProfile', { user_id: targetUserId });
             } catch (e) {
-                // Fallback на открытие профиля
                 try {
-                    vkBridge.send('VKWebAppOpenProfile', { user_id: userId });
+                    vkBridge.send('VKWebAppOpenLink', { link: `https://vk.com/id${targetUserId}` });
                 } catch (e2) {
-                    // Последний fallback — ссылка
-                    const link = `https://vk.com/id${userId}`;
-                    vkBridge.send('VKWebAppOpenLink', { link });
+                    showToast(`VK ID: ${targetUserId}`);
                 }
             }
             taptic('medium');
         }
 
-        // Рендер объявлений для водителя
-        function renderDriverPosts() {
+        // Загрузка заказов с сервера
+        async function loadOrders() {
             const container = document.getElementById('driverPosts');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">🔄</div>
+                    <div>Загрузка заказов...</div>
+                </div>
+            `;
 
-            if (mockPosts.length === 0) {
+            try {
+                const response = await fetch(`${API_URL}/index.php`);
+                const data = await response.json();
+
+                if (data.success && data.orders.length > 0) {
+                    renderOrders(data.orders);
+                } else {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <div>Пока нет заказов рядом</div>
+                            <div style="font-size: 13px; margin-top: 8px;">Попробуйте обновить позже</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading orders:', error);
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">📭</div>
-                        <div>Пока нет объявлений рядом</div>
-                        <div style="font-size: 13px; margin-top: 8px;">Попробуйте обновить позже</div>
+                        <div class="empty-state-icon">⚠️</div>
+                        <div>Не удалось загрузить заказы</div>
+                        <div style="font-size: 13px; margin-top: 8px;">Проверьте интернет</div>
                     </div>
                 `;
-                return;
             }
+        }
 
-            container.innerHTML = mockPosts.map(p => `
-                <div class="post" id="post-${p.id}">
+        // Отображение заказов
+        function renderOrders(orders) {
+            const container = document.getElementById('driverPosts');
+
+            container.innerHTML = orders.map(order => `
+                <div class="post" id="post-${order.id}">
                     <div class="post-header">
                         <div class="user-info">
                             <div class="user-avatar">
-                                ${p.userPhoto ? `<img src="${p.userPhoto}" alt="">` : '👤'}
+                                ${order.userPhoto ? `<img src="${order.userPhoto}" alt="">` : '👤'}
                             </div>
                             <div class="user-meta">
-                                <h3>${escapeHtml(p.userName)}</h3>
-                                <div class="user-rating">⭐ ${p.rating} • ${p.trips} поездок</div>
+                                <h3>${escapeHtml(order.userName)}</h3>
+                                <div class="user-rating">Заказ #${order.id.substr(-4)}</div>
                             </div>
                         </div>
-                        <div class="post-price">${p.price} ₽</div>
+                        <div class="post-price">${order.price} ₽</div>
                     </div>
-                    <div class="post-class">${getClassEmoji(p.carClass)} ${getClassName(p.carClass)}</div>
+                    <div class="post-class">${getClassEmoji(order.class)} ${getClassName(order.class)}</div>
                     <div class="route">
-                        <div class="route-point"><div class="route-dot"></div>${escapeHtml(p.from)}</div>
-                        <div class="route-point"><div class="route-dot to"></div>${escapeHtml(p.to)}</div>
+                        <div class="route-point"><div class="route-dot"></div>${escapeHtml(order.from)}</div>
+                        <div class="route-point"><div class="route-dot to"></div>${escapeHtml(order.to)}</div>
                     </div>
-                    <div class="post-meta">${formatTime(p.createdAt)}</div>
+                    <div class="post-meta">
+                        <span>${formatTime(order.createdAt)}</span>
+                    </div>
                     <div class="actions">
-                        <button class="btn btn-secondary" onclick="skipPost(${p.id})">Пропустить</button>
-                        <button class="btn btn-primary btn-vk" onclick="contactPassenger(${p.userId}, '${escapeHtml(p.userName)}')">Написать</button>
+                        <button class="btn btn-secondary" onclick="skipOrder('${order.id}')">Пропустить</button>
+                        <button class="btn btn-primary btn-vk" onclick="contactPassenger('${order.userId}', '${escapeHtml(order.userName)}')">Написать</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Экранирование HTML
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
 
-        // Форматирование времени
         function formatTime(timestamp) {
-            const diff = Math.floor((Date.now() - timestamp) / 1000);
+            const now = Math.floor(Date.now() / 1000);
+            const diff = now - timestamp;
             if (diff < 60) return 'Только что';
             if (diff < 3600) return `${Math.floor(diff / 60)} мин назад`;
             if (diff < 86400) return `${Math.floor(diff / 3600)} ч назад`;
@@ -976,6 +917,117 @@
 
         function getClassName(cls) {
             return cls === 'econom' ? 'Эконом' : cls === 'comfort' ? 'Комфорт' : 'Комфорт+';
+        }
+
+        // Создание заказа
+        async function createOrder() {
+            const from = document.getElementById('fromAddr').value.trim();
+            const to = document.getElementById('toAddr').value.trim();
+            const price = document.getElementById('priceInput').value;
+
+            if (!from || !to) {
+                showToast('❌ Укажите адреса');
+                taptic('heavy');
+                return;
+            }
+
+            if (!price || price < 50) {
+                showToast('❌ Цена минимум 50 ₽');
+                taptic('heavy');
+                return;
+            }
+
+            const btn = document.getElementById('createOrderBtn');
+            btn.disabled = true;
+            btn.textContent = 'ОТПРАВКА...';
+
+            try {
+                const response = await fetch(`${API_URL}/index.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        from: from,
+                        to: to,
+                        price: parseInt(price),
+                        class: currentClass,
+                        userId: userId || 'guest',
+                        userName: userName
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    taptic('success');
+                    showToast(`✅ Заказ #${data.order.id.substr(-4)} создан! ${price}₽`);
+
+                    // Сброс формы
+                    document.getElementById('fromAddr').value = '';
+                    document.getElementById('toAddr').value = '';
+                    document.getElementById('priceInput').value = '';
+                } else {
+                    showToast('❌ Ошибка: ' + (data.error || 'Не удалось создать'));
+                    taptic('heavy');
+                }
+            } catch (error) {
+                console.error('Error creating order:', error);
+                showToast('❌ Нет связи с сервером');
+                taptic('heavy');
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'СОЗДАТЬ ЗАКАЗ';
+        }
+
+        // Пропустить заказ (удалить)
+        async function skipOrder(orderId) {
+            const post = document.getElementById(`post-${orderId}`);
+            if (post) {
+                post.classList.add('removing');
+                taptic('light');
+
+                // Удаляем с сервера
+                try {
+                    await fetch(`${API_URL}/index.php`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ id: orderId })
+                    });
+                } catch (e) {
+                    console.error('Error deleting order:', e);
+                }
+
+                setTimeout(() => {
+                    post.remove();
+                    const remaining = document.querySelectorAll('.post:not(.removing)');
+                    if (remaining.length === 0) {
+                        document.getElementById('driverPosts').innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-state-icon">✅</div>
+                                <div>Все заказы просмотрены</div>
+                            </div>
+                        `;
+                    }
+                }, 300);
+            }
+        }
+
+        // Связаться с пассажиром
+        function contactPassenger(passengerId, passengerName) {
+            taptic('medium');
+
+            if (!vkBridgeAvailable) {
+                showToast(`Напишите ${passengerName} в VK`);
+                return;
+            }
+
+            if (confirm(`Написать ${passengerName}?`)) {
+                openVKProfile(passengerId);
+            }
         }
 
         // Смена роли
@@ -991,7 +1043,7 @@
                 document.getElementById('driverPage').classList.add('active');
                 document.getElementById('passengerPage').classList.remove('active');
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.add('active'));
-                renderDriverPosts();
+                loadOrders();
             } else {
                 document.querySelector('.role-btn.passenger').classList.add('active');
                 document.getElementById('passengerPage').classList.add('active');
@@ -1007,94 +1059,6 @@
             document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             taptic('light');
-        }
-
-        // Создание заказа пассажиром
-        async function createOrder() {
-            const from = document.getElementById('fromAddr').value.trim();
-            const to = document.getElementById('toAddr').value.trim();
-            const price = document.getElementById('priceInput').value;
-
-            // Валидация
-            if (!from || !to) {
-                showToast('❌ Укажите адреса');
-                taptic('heavy');
-                return;
-            }
-
-            if (!price || price < 50) {
-                showToast('❌ Цена должна быть минимум 50 ₽');
-                taptic('heavy');
-                return;
-            }
-
-            if (price > 50000) {
-                showToast('❌ Максимальная цена 50 000 ₽');
-                taptic('heavy');
-                return;
-            }
-
-            // Блокируем кнопку
-            const btn = document.getElementById('createOrderBtn');
-            btn.disabled = true;
-            btn.textContent = 'СОЗДАЁМ...';
-
-            // Имитируем отправку на сервер
-            await new Promise(r => setTimeout(r, 1000));
-
-            // Успех
-            taptic('success');
-            showNotification(`✅ Заказ создан! ${price}₽`);
-            showToast(`Заказ размещён. Ожидайте водителей!`);
-
-            // Сброс формы
-            document.getElementById('fromAddr').value = '';
-            document.getElementById('toAddr').value = '';
-            document.getElementById('priceInput').value = '';
-
-            // Разблокируем кнопку
-            btn.disabled = false;
-            btn.textContent = 'СОЗДАТЬ ЗАКАЗ';
-        }
-
-        // Связаться с пассажиром (реальная функция)
-        function contactPassenger(passengerId, passengerName) {
-            taptic('medium');
-
-            if (!vkBridgeAvailable) {
-                showToast(`Напишите ${passengerName} в VK вручную`);
-                return;
-            }
-
-            // Показываем подтверждение
-            if (confirm(`Написать ${passengerName}?
-
-Откроется чат VK`)) {
-                openVKProfile(passengerId);
-            }
-        }
-
-        // Пропустить объявление
-        function skipPost(id) {
-            const post = document.getElementById(`post-${id}`);
-            if (post) {
-                post.classList.add('removing');
-                taptic('light');
-                setTimeout(() => {
-                    post.remove();
-                    // Если все скрыты, показываем пустое состояние
-                    const remaining = document.querySelectorAll('.post:not(.removing)');
-                    if (remaining.length === 0) {
-                        document.getElementById('driverPosts').innerHTML = `
-                            <div class="empty-state">
-                                <div class="empty-state-icon">✅</div>
-                                <div>Все объявления просмотрены</div>
-                                <div style="font-size: 13px; margin-top: 8px;">Новые появятся скоро</div>
-                            </div>
-                        `;
-                    }
-                }, 300);
-            }
         }
 
         // Навигация
@@ -1114,7 +1078,6 @@
 
             taptic('light');
 
-            // Заглушки для страниц
             if (page !== 'home') {
                 showToast('Раздел в разработке 🚧');
             }
@@ -1126,7 +1089,6 @@
             return false;
         };
 
-        // Защита от падения если VK Bridge не загрузился
         window.addEventListener('unhandledrejection', function(event) {
             console.error('Unhandled promise rejection:', event.reason);
         });
