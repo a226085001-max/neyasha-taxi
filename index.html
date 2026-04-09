@@ -22,8 +22,6 @@
             --orange: #ffaa00;
             --white: #ffffff;
             --vk-blue: #0077ff;
-            --red: #ff4444;
-            --green: #00c851;
         }
 
         body {
@@ -49,9 +47,7 @@
             gap: 20px;
         }
 
-        .loading.hidden {
-            display: none;
-        }
+        .loading.hidden { display: none; }
 
         .spinner {
             width: 48px;
@@ -62,9 +58,7 @@
             animation: spin 1s linear infinite;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .role-bar {
             position: fixed;
@@ -93,7 +87,6 @@
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
-            -webkit-appearance: none;
         }
 
         .role-btn.active {
@@ -118,10 +111,7 @@
             padding-bottom: calc(12px + env(safe-area-inset-bottom));
         }
 
-        .page.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
+        .page.active { display: block; animation: fadeIn 0.3s ease; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -134,16 +124,6 @@
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 12px;
-        }
-
-        .card-yellow {
-            border-color: var(--yellow);
-        }
-
-        .header-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
         .brand {
@@ -175,75 +155,37 @@
             color: var(--gray-light);
         }
 
-        .status {
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .status.online {
-            background: var(--yellow);
-            color: var(--black);
-        }
-
-        .earnings {
-            text-align: center;
-        }
-
-        .earnings-label {
-            font-size: 12px;
-            color: var(--gray-light);
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-
-        .earnings-value {
-            font-size: 48px;
-            font-weight: 900;
-            color: var(--yellow);
-            font-family: 'SF Mono', monospace;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .stat {
-            background: var(--dark);
-            border: 1px solid var(--gray);
-            border-radius: 12px;
-            padding: 12px 4px;
-            text-align: center;
-        }
-
-        .stat-icon {
-            font-size: 20px;
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            font-size: 9px;
-            color: var(--gray-light);
-            text-transform: uppercase;
-        }
-
-        .stat-value {
-            font-size: 16px;
-            font-weight: 800;
-            font-family: 'SF Mono', monospace;
-        }
-
         .section-title {
             font-size: 14px;
             font-weight: 800;
             color: var(--yellow);
             text-transform: uppercase;
             margin: 16px 0 12px;
+        }
+
+        /* City selector */
+        .city-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .city-btn {
+            padding: 10px 16px;
+            background: var(--gray);
+            border: 1px solid var(--gray-light);
+            border-radius: 20px;
+            color: var(--gray-light);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .city-btn.active {
+            background: var(--yellow);
+            border-color: var(--yellow);
+            color: var(--black);
         }
 
         .post {
@@ -265,6 +207,8 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .user-info {
@@ -305,7 +249,6 @@
             font-size: 24px;
             font-weight: 900;
             color: var(--yellow);
-            font-family: 'SF Mono', monospace;
         }
 
         .route {
@@ -341,6 +284,13 @@
             flex-wrap: wrap;
         }
 
+        .post-city {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 4px 8px;
+            border-radius: 8px;
+            color: var(--yellow);
+        }
+
         .post-class {
             display: inline-block;
             font-size: 12px;
@@ -352,9 +302,19 @@
             margin-bottom: 12px;
         }
 
+        .comment-box {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 8px;
+            padding: 8px;
+            background: #1a1a1a;
+            border-radius: 8px;
+        }
+
         .actions {
             display: flex;
             gap: 8px;
+            margin-top: 12px;
         }
 
         .btn {
@@ -366,33 +326,15 @@
             font-weight: 700;
             cursor: pointer;
             text-transform: uppercase;
-            -webkit-appearance: none;
             transition: all 0.2s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .btn:active {
-            transform: scale(0.98);
-        }
+        .btn:active { transform: scale(0.98); }
 
-        .btn-primary {
-            background: var(--yellow);
-            color: var(--black);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--gray-light);
-            border: 1px solid var(--gray-light);
-        }
-
-        .btn-vk {
-            background: var(--vk-blue);
-            color: white;
-        }
+        .btn-primary { background: var(--yellow); color: var(--black); }
+        .btn-secondary { background: transparent; color: var(--gray-light); border: 1px solid var(--gray-light); }
+        .btn-vk { background: var(--vk-blue); color: white; }
+        .btn-chat { background: #2a2a2a; color: var(--yellow); border: 1px solid var(--yellow); }
 
         .passenger-header {
             background: linear-gradient(135deg, var(--vk-blue) 0%, #00c6ff 100%);
@@ -402,34 +344,9 @@
             margin-bottom: 16px;
         }
 
-        .passenger-logo {
-            font-size: 44px;
-            margin-bottom: 8px;
-        }
-
-        .passenger-title {
-            font-size: 32px;
-            font-weight: 900;
-            color: white;
-            text-transform: uppercase;
-        }
-
-        .passenger-subtitle {
-            font-size: 14px;
-            color: rgba(255,255,255,0.9);
-        }
-
-        .input-group {
-            margin-bottom: 12px;
-        }
-
-        .input-label {
-            font-size: 12px;
-            color: var(--gray-light);
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            display: block;
-        }
+        .passenger-logo { font-size: 44px; margin-bottom: 8px; }
+        .passenger-title { font-size: 32px; font-weight: 900; color: white; text-transform: uppercase; }
+        .passenger-subtitle { font-size: 14px; color: rgba(255,255,255,0.9); }
 
         .input {
             width: 100%;
@@ -440,12 +357,24 @@
             border-radius: 12px;
             font-size: 15px;
             outline: none;
-            -webkit-appearance: none;
         }
 
-        .input:focus {
-            border-color: var(--vk-blue);
+        .input:focus { border-color: var(--vk-blue); }
+
+        .textarea {
+            width: 100%;
+            background: var(--gray);
+            border: 1px solid var(--gray-light);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            resize: vertical;
+            font-family: inherit;
         }
+
+        .textarea:focus { border-color: var(--vk-blue); }
 
         .class-selector {
             display: flex;
@@ -464,7 +393,6 @@
             font-weight: 700;
             cursor: pointer;
             text-align: center;
-            -webkit-appearance: none;
             transition: all 0.2s ease;
         }
 
@@ -480,9 +408,7 @@
             margin-bottom: 4px;
         }
 
-        .form-group {
-            margin-bottom: 16px;
-        }
+        .form-group { margin-bottom: 16px; }
 
         .form-label {
             font-size: 13px;
@@ -503,10 +429,7 @@
             line-height: 1.5;
         }
 
-        .hint-icon {
-            color: var(--yellow);
-            margin-right: 4px;
-        }
+        .hint-icon { color: var(--yellow); margin-right: 4px; }
 
         .search-btn {
             width: 100%;
@@ -521,58 +444,10 @@
             letter-spacing: 2px;
             cursor: pointer;
             margin-top: 16px;
-            -webkit-appearance: none;
         }
 
-        .search-btn:active {
-            transform: scale(0.98);
-        }
-
-        .search-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(20, 20, 20, 0.98);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid var(--gray);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
-            z-index: 1000;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: var(--gray-light);
-            text-decoration: none;
-            font-size: 10px;
-            font-weight: 600;
-            padding: 4px 16px;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        .nav-item.active {
-            color: var(--yellow);
-        }
-
-        .nav-item.passenger-active {
-            color: var(--vk-blue);
-        }
-
-        .nav-icon {
-            font-size: 24px;
-        }
+        .search-btn:active { transform: scale(0.98); }
+        .search-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .empty-state {
             text-align: center;
@@ -580,10 +455,7 @@
             color: var(--gray-light);
         }
 
-        .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
+        .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
 
         .toast {
             position: fixed;
@@ -603,10 +475,7 @@
             text-align: center;
         }
 
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         .refresh-btn {
             background: var(--gray);
@@ -620,8 +489,114 @@
             margin-bottom: 16px;
             width: 100%;
         }
+
+        /* Chat Modal */
+        .chat-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--black);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .chat-modal.open {
+            transform: translateX(0);
+        }
+
+        .chat-header {
+            padding: 16px;
+            background: var(--dark);
+            border-bottom: 1px solid var(--yellow);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-top: calc(16px + env(safe-area-inset-top));
+        }
+
+        .chat-back {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--yellow);
+        }
+
+        .chat-title {
+            flex: 1;
+            font-weight: 700;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 14px;
+        }
+
+        .message.from-passenger {
+            background: var(--vk-blue);
+            color: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.from-driver {
+            background: var(--yellow);
+            color: var(--black);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .chat-input-area {
+            padding: 12px;
+            background: var(--dark);
+            border-top: 1px solid var(--gray);
+            display: flex;
+            gap: 8px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+        }
+
+        .chat-input {
+            flex: 1;
+            background: var(--gray);
+            border: 1px solid var(--gray-light);
+            color: white;
+            padding: 12px;
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chat-send {
+            background: var(--yellow);
+            border: none;
+            border-radius: 24px;
+            padding: 0 20px;
+            font-size: 20px;
+            cursor: pointer;
+        }
     </style>
-<base target="_blank">
 </head>
 <body>
     <div class="loading" id="loading">
@@ -637,7 +612,7 @@
     <div class="content">
         <!-- DRIVER PAGE -->
         <div id="driverPage" class="page active">
-            <div class="card header-card">
+            <div class="card">
                 <div class="brand">
                     <div class="brand-icon">🚕</div>
                     <div class="brand-text">
@@ -645,47 +620,20 @@
                         <span>Такси без комиссии</span>
                     </div>
                 </div>
-                <div class="status online" id="driverStatus">Онлайн</div>
             </div>
 
-            <div class="card card-yellow earnings">
-                <div class="earnings-label">Заработано сегодня</div>
-                <div class="earnings-value" id="earningsValue">0 ₽</div>
+            <div class="section-title">📍 Мой город</div>
+            <div class="city-selector" id="driverCitySelector">
+                <button class="city-btn" data-city="Москва" onclick="setDriverCity('Москва')">Москва</button>
+                <button class="city-btn" data-city="СПб" onclick="setDriverCity('СПб')">СПб</button>
+                <button class="city-btn" data-city="Казань" onclick="setDriverCity('Казань')">Казань</button>
+                <button class="city-btn" data-city="Новосибирск" onclick="setDriverCity('Новосибирск')">Новосибирск</button>
+                <button class="city-btn" data-city="Екатеринбург" onclick="setDriverCity('Екатеринбург')">Екатеринбург</button>
             </div>
 
-            <div class="stats">
-                <div class="stat">
-                    <div class="stat-icon">🚗</div>
-                    <div class="stat-label">Поездки</div>
-                    <div class="stat-value" id="tripsCount">0</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-icon">⏱️</div>
-                    <div class="stat-label">Часы</div>
-                    <div class="stat-value" id="hoursCount">0</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-icon">⭐</div>
-                    <div class="stat-label">Рейтинг</div>
-                    <div class="stat-value" id="ratingValue">5.0</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-icon">💰</div>
-                    <div class="stat-label">Чаевые</div>
-                    <div class="stat-value" id="tipsCount">0</div>
-                </div>
-            </div>
-
-            <div class="section-title">📋 Заказы рядом</div>
-
+            <div class="section-title">📋 Заказы в моём городе</div>
             <button class="refresh-btn" onclick="loadOrders()">🔄 Обновить список</button>
-
-            <div id="driverPosts">
-                <div class="empty-state">
-                    <div class="empty-state-icon">🔄</div>
-                    <div>Загрузка заказов...</div>
-                </div>
-            </div>
+            <div id="driverPosts"><div class="empty-state"><div class="empty-state-icon">🔄</div><div>Загрузка заказов...</div></div></div>
         </div>
 
         <!-- PASSENGER PAGE -->
@@ -697,6 +645,16 @@
             </div>
 
             <div class="card">
+                <div class="form-group">
+                    <label class="form-label">🌆 Город</label>
+                    <select class="input" id="citySelect">
+                        <option value="Москва">Москва</option>
+                        <option value="СПб">Санкт-Петербург</option>
+                        <option value="Казань">Казань</option>
+                        <option value="Новосибирск">Новосибирск</option>
+                        <option value="Екатеринбург">Екатеринбург</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <label class="form-label">Откуда</label>
                     <input type="text" class="input" id="fromAddr" placeholder="Улица, дом" maxlength="100">
@@ -710,94 +668,113 @@
             <div class="card">
                 <label class="form-label">Класс автомобиля</label>
                 <div class="class-selector">
-                    <button class="class-btn active" onclick="setClass('econom', this)">
-                        <span class="emoji">🚕</span>
-                        Эконом
-                    </button>
-                    <button class="class-btn" onclick="setClass('comfort', this)">
-                        <span class="emoji">🚗</span>
-                        Комфорт
-                    </button>
-                    <button class="class-btn" onclick="setClass('comfortplus', this)">
-                        <span class="emoji">⭐</span>
-                        Комфорт+
-                    </button>
+                    <button class="class-btn active" onclick="setClass('econom', this)"><span class="emoji">🚕</span>Эконом</button>
+                    <button class="class-btn" onclick="setClass('comfort', this)"><span class="emoji">🚗</span>Комфорт</button>
+                    <button class="class-btn" onclick="setClass('comfortplus', this)"><span class="emoji">⭐</span>Комфорт+</button>
                 </div>
             </div>
 
             <div class="card">
                 <div class="form-group">
-                    <label class="form-label">Ваша цена (₽)</label>
-                    <input type="number" class="input" id="priceInput" placeholder="Например: 300" min="50" max="50000" style="font-size: 28px; font-weight: 900; text-align: center; font-family: 'SF Mono', monospace;">
+                    <label class="form-label">💰 Ваша цена (₽)</label>
+                    <input type="number" class="input" id="priceInput" placeholder="Например: 300" min="50" max="50000" style="font-size: 28px; font-weight: 900; text-align: center;">
                 </div>
-
+                <div class="form-group">
+                    <label class="form-label">💬 Комментарий (подъезд, этаж, домофон)</label>
+                    <textarea class="textarea" id="commentInput" rows="3" placeholder="Например: подъезд 3, домофон 123, 5 этаж, телефон 999-123-45-67"></textarea>
+                </div>
                 <div class="hint">
                     <span class="hint-icon">💡</span>
                     <strong>Как это работает:</strong><br>
                     1. Откройте Яндекс.Такси и узнайте цену<br>
                     2. Введите эту сумму здесь (без комиссии!)<br>
-                    3. Покажите скриншот водителю при встрече
+                    3. Водитель свяжется с вами в чате после того, как возьмёт заказ
                 </div>
-
                 <button class="search-btn" id="createOrderBtn" onclick="createOrder()">СОЗДАТЬ ЗАКАЗ</button>
             </div>
         </div>
     </div>
 
-    <div class="nav">
-        <button class="nav-item active" onclick="setNav(this, 'home')">🏠<span>Главная</span></button>
-        <button class="nav-item" onclick="setNav(this, 'orders')">📋<span>Заказы</span></button>
-        <button class="nav-item" onclick="setNav(this, 'earnings')">💵<span>Заработок</span></button>
-        <button class="nav-item" onclick="setNav(this, 'profile')">⭐<span>Профиль</span></button>
-    </div>
-
     <div class="toast" id="toast"></div>
 
-    <script>
-        // API URL - замени на свой домен
-        const API_URL = 'https://demo.rentdriver.ru';
+    <!-- Chat Modal -->
+    <div class="chat-modal" id="chatModal">
+        <div class="chat-header">
+            <button class="chat-back" onclick="closeChat()">←</button>
+            <div class="chat-title" id="chatTitle">Чат с пассажиром</div>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Сообщение..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button class="chat-send" onclick="sendMessage()">📤</button>
+        </div>
+    </div>
 
-        // Глобальные переменные
+    <script>
+        const API_URL = 'https://demo.rentdriver.ru';
+        
         let currentRole = 'driver';
         let currentClass = 'econom';
+        let currentDriverCity = localStorage.getItem('driverCity') || 'Москва';
         let userId = null;
         let userName = 'Гость';
         let userPhoto = null;
         let vkBridgeAvailable = false;
+        let refreshInterval = null;
+        let currentChatOrderId = null;
+        let currentChatOrder = null;
 
-        // Инициализация VK Bridge
+        // Принудительное скрытие загрузки через 3 секунды
+        setTimeout(() => {
+            const loader = document.getElementById('loading');
+            if (loader && !loader.classList.contains('hidden')) {
+                loader.classList.add('hidden');
+                if (currentRole === 'driver') loadOrders();
+            }
+        }, 3000);
+
         async function initVK() {
             try {
                 if (typeof vkBridge !== 'undefined') {
                     await vkBridge.send('VKWebAppInit');
                     vkBridgeAvailable = true;
-
                     try {
                         const userData = await vkBridge.send('VKWebAppGetUserInfo');
                         userId = userData.id;
                         userName = userData.first_name;
                         userPhoto = userData.photo_100;
-                    } catch (e) {}
-
-                    taptic('light');
+                        console.log('VK user:', userName);
+                    } catch(e) { console.warn('Can\'t get user info'); }
                 }
-            } catch (e) {
-                vkBridgeAvailable = false;
+            } catch(e) { console.warn('VK Bridge error:', e); }
+
+            document.getElementById('loading').classList.add('hidden');
+            
+            // Подсветка выбранного города у водителя
+            highlightDriverCity();
+            
+            if (currentRole === 'driver') {
+                loadOrders();
+                refreshInterval = setInterval(loadOrders, 5000);
             }
-
-            setTimeout(() => {
-                document.getElementById('loading').classList.add('hidden');
-                if (currentRole === 'driver') {
-                    loadOrders();
-                }
-            }, 500);
         }
 
-        function taptic(style = 'light') {
-            if (!vkBridgeAvailable) return;
-            try {
-                vkBridge.send('VKWebAppTapticImpactOccurred', { style });
-            } catch (e) {}
+        function highlightDriverCity() {
+            document.querySelectorAll('#driverCitySelector .city-btn').forEach(btn => {
+                if (btn.getAttribute('data-city') === currentDriverCity) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function setDriverCity(city) {
+            currentDriverCity = city;
+            localStorage.setItem('driverCity', city);
+            highlightDriverCity();
+            loadOrders();
+            showToast(`📍 Выбран город: ${city}`);
         }
 
         function showToast(message) {
@@ -807,75 +784,47 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        function openVKProfile(targetUserId) {
-            if (!vkBridgeAvailable) {
-                showToast('Откройте профиль вручную в VK');
-                return;
-            }
-
-            try {
-                vkBridge.send('VKWebAppOpenProfile', { user_id: targetUserId });
-            } catch (e) {
-                try {
-                    vkBridge.send('VKWebAppOpenLink', { link: `https://vk.com/id${targetUserId}` });
-                } catch (e2) {
-                    showToast(`VK ID: ${targetUserId}`);
-                }
-            }
-            taptic('medium');
-        }
-
-        // Загрузка заказов с сервера
         async function loadOrders() {
             const container = document.getElementById('driverPosts');
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">🔄</div>
-                    <div>Загрузка заказов...</div>
-                </div>
-            `;
+            if (!container) return;
+            
+            container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🔄</div><div>Загрузка заказов...</div></div>`;
 
             try {
                 const response = await fetch(`${API_URL}/index.php`);
                 const data = await response.json();
 
-                if (data.success && data.orders.length > 0) {
-                    renderOrders(data.orders);
+                if (data.success && data.orders && data.orders.length > 0) {
+                    // Фильтруем заказы по городу водителя
+                    const filteredOrders = data.orders.filter(order => order.city === currentDriverCity);
+                    if (filteredOrders.length > 0) {
+                        renderOrders(filteredOrders);
+                    } else {
+                        container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📭</div><div>В городе ${currentDriverCity} пока нет заказов</div></div>`;
+                    }
                 } else {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-icon">📭</div>
-                            <div>Пока нет заказов рядом</div>
-                            <div style="font-size: 13px; margin-top: 8px;">Попробуйте обновить позже</div>
-                        </div>
-                    `;
+                    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📭</div><div>Нет активных заказов</div></div>`;
                 }
             } catch (error) {
-                console.error('Error loading orders:', error);
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">⚠️</div>
-                        <div>Не удалось загрузить заказы</div>
-                        <div style="font-size: 13px; margin-top: 8px;">Проверьте интернет</div>
-                    </div>
-                `;
+                console.error('Load error:', error);
+                container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠️</div><div>Ошибка загрузки</div></div>`;
             }
         }
 
-        // Отображение заказов
         function renderOrders(orders) {
             const container = document.getElementById('driverPosts');
+            if (!container) return;
 
-            container.innerHTML = orders.map(order => `
+            const reversedOrders = [...orders].reverse();
+            
+            container.innerHTML = reversedOrders.map(order => `
                 <div class="post" id="post-${order.id}">
                     <div class="post-header">
                         <div class="user-info">
-                            <div class="user-avatar">
-                                ${order.userPhoto ? `<img src="${order.userPhoto}" alt="">` : '👤'}
-                            </div>
+                            <div class="user-avatar">${order.userPhoto ? `<img src="${order.userPhoto}">` : '👤'}</div>
                             <div class="user-meta">
                                 <h3>${escapeHtml(order.userName)}</h3>
-                                <div class="user-rating">Заказ #${order.id.substr(-4)}</div>
+                                <div class="user-rating">#${order.id.slice(-4)}</div>
                             </div>
                         </div>
                         <div class="post-price">${order.price} ₽</div>
@@ -885,18 +834,115 @@
                         <div class="route-point"><div class="route-dot"></div>${escapeHtml(order.from)}</div>
                         <div class="route-point"><div class="route-dot to"></div>${escapeHtml(order.to)}</div>
                     </div>
+                    ${order.comment ? `<div class="comment-box">💬 ${escapeHtml(order.comment)}</div>` : ''}
                     <div class="post-meta">
+                        <span class="post-city">📍 ${escapeHtml(order.city)}</span>
                         <span>${formatTime(order.createdAt)}</span>
                     </div>
                     <div class="actions">
                         <button class="btn btn-secondary" onclick="skipOrder('${order.id}')">Пропустить</button>
+                        <button class="btn btn-chat" onclick="openChat('${order.id}')">💬 Чат</button>
                         <button class="btn btn-primary btn-vk" onclick="contactPassenger('${order.userId}', '${escapeHtml(order.userName)}')">Написать</button>
                     </div>
                 </div>
             `).join('');
         }
 
+        async function openChat(orderId) {
+            currentChatOrderId = orderId;
+            
+            // Загружаем заказ с сервера
+            try {
+                const response = await fetch(`${API_URL}/index.php`);
+                const data = await response.json();
+                currentChatOrder = data.orders.find(o => o.id === orderId);
+                
+                if (currentChatOrder) {
+                    document.getElementById('chatTitle').innerHTML = `💬 Чат: ${escapeHtml(currentChatOrder.userName)}<br><span style="font-size:12px">${escapeHtml(currentChatOrder.from)} → ${escapeHtml(currentChatOrder.to)}</span>`;
+                    renderChatMessages();
+                    document.getElementById('chatModal').classList.add('open');
+                    
+                    // Начинаем проверять новые сообщения каждые 3 секунды
+                    if (window.chatInterval) clearInterval(window.chatInterval);
+                    window.chatInterval = setInterval(refreshChat, 3000);
+                }
+            } catch(e) {
+                showToast('Ошибка загрузки чата');
+            }
+        }
+
+        async function refreshChat() {
+            if (!currentChatOrderId) return;
+            try {
+                const response = await fetch(`${API_URL}/index.php`);
+                const data = await response.json();
+                const updatedOrder = data.orders.find(o => o.id === currentChatOrderId);
+                if (updatedOrder) {
+                    currentChatOrder = updatedOrder;
+                    renderChatMessages();
+                }
+            } catch(e) {}
+        }
+
+        function renderChatMessages() {
+            const container = document.getElementById('chatMessages');
+            if (!currentChatOrder || !currentChatOrder.chat || currentChatOrder.chat.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="padding:20px">💬 Нет сообщений. Напишите что-нибудь...</div>';
+                return;
+            }
+            
+            container.innerHTML = currentChatOrder.chat.map(msg => `
+                <div class="message ${msg.from === 'passenger' ? 'from-passenger' : 'from-driver'}">
+                    ${escapeHtml(msg.text)}
+                    <div class="message-time">${new Date(msg.time * 1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+                </div>
+            `).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text || !currentChatOrderId) return;
+            
+            input.value = '';
+            
+            // Определяем, кто отправляет
+            const from = currentRole === 'driver' ? 'driver' : 'passenger';
+            
+            try {
+                const response = await fetch(`${API_URL}/index.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'sendMessage',
+                        orderId: currentChatOrderId,
+                        message: { from, text, time: Math.floor(Date.now() / 1000) }
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    currentChatOrder = data.order;
+                    renderChatMessages();
+                } else {
+                    showToast('Ошибка отправки');
+                }
+            } catch(e) {
+                showToast('Ошибка отправки');
+            }
+        }
+
+        function closeChat() {
+            document.getElementById('chatModal').classList.remove('open');
+            if (window.chatInterval) {
+                clearInterval(window.chatInterval);
+                window.chatInterval = null;
+            }
+            currentChatOrderId = null;
+        }
+
         function escapeHtml(text) {
+            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
@@ -912,30 +958,26 @@
         }
 
         function getClassEmoji(cls) {
-            return cls === 'econom' ? '🚕' : cls === 'comfort' ? '🚗' : '⭐';
+            if (cls === 'econom') return '🚕';
+            if (cls === 'comfort') return '🚗';
+            return '⭐';
         }
 
         function getClassName(cls) {
-            return cls === 'econom' ? 'Эконом' : cls === 'comfort' ? 'Комфорт' : 'Комфорт+';
+            if (cls === 'econom') return 'Эконом';
+            if (cls === 'comfort') return 'Комфорт';
+            return 'Комфорт+';
         }
 
-        // Создание заказа
         async function createOrder() {
+            const city = document.getElementById('citySelect').value;
             const from = document.getElementById('fromAddr').value.trim();
             const to = document.getElementById('toAddr').value.trim();
             const price = document.getElementById('priceInput').value;
+            const comment = document.getElementById('commentInput').value.trim();
 
-            if (!from || !to) {
-                showToast('❌ Укажите адреса');
-                taptic('heavy');
-                return;
-            }
-
-            if (!price || price < 50) {
-                showToast('❌ Цена минимум 50 ₽');
-                taptic('heavy');
-                return;
-            }
+            if (!from || !to) { showToast('❌ Укажите адреса'); return; }
+            if (!price || price < 50) { showToast('❌ Цена от 50 ₽'); return; }
 
             const btn = document.getElementById('createOrderBtn');
             btn.disabled = true;
@@ -944,156 +986,83 @@
             try {
                 const response = await fetch(`${API_URL}/index.php`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        from: from,
-                        to: to,
+                        city, from, to,
                         price: parseInt(price),
                         class: currentClass,
+                        comment: comment,
                         userId: userId || 'guest',
-                        userName: userName
+                        userName: userName,
+                        userPhoto: userPhoto,
+                        chat: []
                     })
                 });
 
                 const data = await response.json();
-
                 if (data.success) {
-                    taptic('success');
-                    showToast(`✅ Заказ #${data.order.id.substr(-4)} создан! ${price}₽`);
-
-                    // Сброс формы
+                    showToast(`✅ Заказ #${data.order.id.slice(-4)} создан! ${price} ₽`);
                     document.getElementById('fromAddr').value = '';
                     document.getElementById('toAddr').value = '';
                     document.getElementById('priceInput').value = '';
+                    document.getElementById('commentInput').value = '';
                 } else {
-                    showToast('❌ Ошибка: ' + (data.error || 'Не удалось создать'));
-                    taptic('heavy');
+                    showToast('❌ ' + (data.error || 'Ошибка'));
                 }
             } catch (error) {
-                console.error('Error creating order:', error);
                 showToast('❌ Нет связи с сервером');
-                taptic('heavy');
             }
-
             btn.disabled = false;
             btn.textContent = 'СОЗДАТЬ ЗАКАЗ';
         }
 
-        // Пропустить заказ (удалить)
         async function skipOrder(orderId) {
             const post = document.getElementById(`post-${orderId}`);
-            if (post) {
-                post.classList.add('removing');
-                taptic('light');
-
-                // Удаляем с сервера
-                try {
-                    await fetch(`${API_URL}/index.php`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ id: orderId })
-                    });
-                } catch (e) {
-                    console.error('Error deleting order:', e);
-                }
-
-                setTimeout(() => {
-                    post.remove();
-                    const remaining = document.querySelectorAll('.post:not(.removing)');
-                    if (remaining.length === 0) {
-                        document.getElementById('driverPosts').innerHTML = `
-                            <div class="empty-state">
-                                <div class="empty-state-icon">✅</div>
-                                <div>Все заказы просмотрены</div>
-                            </div>
-                        `;
-                    }
-                }, 300);
-            }
+            if (!post) return;
+            post.classList.add('removing');
+            try {
+                await fetch(`${API_URL}/index.php`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: orderId })
+                });
+                setTimeout(() => post.remove(), 300);
+            } catch(e) { post.classList.remove('removing'); }
         }
 
-        // Связаться с пассажиром
         function contactPassenger(passengerId, passengerName) {
-            taptic('medium');
-
-            if (!vkBridgeAvailable) {
-                showToast(`Напишите ${passengerName} в VK`);
-                return;
-            }
-
+            if (!vkBridgeAvailable) { showToast(`Напишите ${passengerName} в VK`); return; }
             if (confirm(`Написать ${passengerName}?`)) {
-                openVKProfile(passengerId);
+                try { vkBridge.send('VKWebAppOpenProfile', { user_id: parseInt(passengerId) }); }
+                catch(e) { showToast(`VK ID: ${passengerId}`); }
             }
         }
 
-        // Смена роли
         function setRole(role) {
             currentRole = role;
             document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => {
-                n.classList.remove('active', 'passenger-active');
-            });
-
+            
             if (role === 'driver') {
                 document.querySelector('.role-btn:first-child').classList.add('active');
                 document.getElementById('driverPage').classList.add('active');
                 document.getElementById('passengerPage').classList.remove('active');
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.add('active'));
+                if (refreshInterval) clearInterval(refreshInterval);
                 loadOrders();
+                refreshInterval = setInterval(loadOrders, 5000);
             } else {
                 document.querySelector('.role-btn.passenger').classList.add('active');
                 document.getElementById('passengerPage').classList.add('active');
                 document.getElementById('driverPage').classList.remove('active');
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.add('passenger-active'));
+                if (refreshInterval) { clearInterval(refreshInterval); refreshInterval = null; }
             }
-            taptic('light');
         }
 
-        // Выбор класса авто
         function setClass(cls, btn) {
             currentClass = cls;
             document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            taptic('light');
         }
 
-        // Навигация
-        function setNav(el, page) {
-            document.querySelectorAll('.nav-item').forEach(n => {
-                n.classList.remove('active');
-                if (currentRole === 'passenger') {
-                    n.classList.remove('passenger-active');
-                }
-            });
-
-            if (currentRole === 'driver') {
-                el.classList.add('active');
-            } else {
-                el.classList.add('passenger-active');
-            }
-
-            taptic('light');
-
-            if (page !== 'home') {
-                showToast('Раздел в разработке 🚧');
-            }
-        }
-
-        // Глобальная обработка ошибок
-        window.onerror = function(msg, url, line) {
-            console.error('Ошибка:', msg, 'на строке', line);
-            return false;
-        };
-
-        window.addEventListener('unhandledrejection', function(event) {
-            console.error('Unhandled promise rejection:', event.reason);
-        });
-
-        // Старт
         initVK();
     </script>
 </body>
