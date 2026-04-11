@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+ <script type="text/javascript" src="https://vk.com/js/api/xd_connection.js?2"></script>
+<script type="text/javascript" src="https://vk.com/js/api/openapi.js?173"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>НЕЯША — Такси без комиссии</title>
@@ -1204,6 +1206,15 @@
 
         function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
     </script>
+    <script type="text/javascript">
+  window.onload = function() {
+    if (typeof VK !== 'undefined') {
+      VK.init({apiId: YOUR_APP_ID}); // Замени YOUR_APP_ID на ID своего приложения в VK
+      VK.callMethod("showLoadingBox", "Загрузка...");
+      VK.callMethod("hideLoadingBox");
+    }
+  }
+</script>
 </body>
 </html>            top: 0;
             left: 0;
