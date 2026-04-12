@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
- <script type="text/javascript" src="https://vk.com/js/api/xd_connection.js?2"></script>
-<script type="text/javascript" src="https://vk.com/js/api/openapi.js?173"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>НЕЯША — Такси без комиссии</title>
+    <title>НеЯша — Такси без комиссии (Бета)</title>
     <style>
         * {
             margin: 0;
@@ -23,6 +21,7 @@
             --white: #ffffff;
             --vk-blue: #0077ff;
             --green: #00c851;
+            --red: #ff4444;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -30,6 +29,19 @@
             color: var(--white);
             min-height: 100vh;
             padding-bottom: calc(80px + env(safe-area-inset-bottom));
+        }
+        .beta-badge {
+            position: fixed;
+            top: 0;
+            right: 0;
+            background: var(--red);
+            color: white;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 10000;
+            border-bottom-left-radius: 8px;
+            opacity: 0.9;
         }
         .loading {
             position: fixed;
@@ -73,57 +85,33 @@
             padding: 16px;
             margin-bottom: 12px;
         }
+        /* Новый логотип SVG */
         .brand {
             display: flex;
             align-items: center;
             gap: 12px;
+            flex-wrap: wrap;
         }
-        .brand-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--yellow);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-        }
-        .brand-text h1 {
-            font-size: 24px;
-            font-weight: 900;
-            color: var(--yellow);
-            text-transform: uppercase;
-        }
-        .brand-text span {
-            font-size: 11px;
-            color: var(--gray-light);
-        }
+       .logo-svg {
+    width: 320px;        /* 400px * 0.8 = 320px (для десктопа) */
+    max-width: 100%;
+    height: auto;
+    flex-shrink: 0;
+}
+@media (max-width: 500px) {
+    .brand {
+        gap: 8px;
+    }
+    .logo-svg {
+        width: 224px;    /* 280px * 0.8 = 224px (для мобильных) */
+    }
+}
         .section-title {
             font-size: 14px;
             font-weight: 800;
             color: var(--yellow);
             text-transform: uppercase;
             margin: 16px 0 12px;
-        }
-        .city-selector {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-        .city-btn {
-            padding: 10px 16px;
-            background: var(--gray);
-            border: 1px solid var(--gray-light);
-            border-radius: 20px;
-            color: var(--gray-light);
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .city-btn.active {
-            background: var(--yellow);
-            border-color: var(--yellow);
-            color: var(--black);
         }
         .input, .select {
             width: 100%;
@@ -195,9 +183,9 @@
         .btn:active { transform: scale(0.98); }
         .btn-primary { background: var(--yellow); color: var(--black); }
         .btn-secondary { background: transparent; color: var(--gray-light); border: 1px solid var(--gray-light); }
-        .btn-vk { background: var(--vk-blue); color: white; }
         .btn-chat { background: #2a2a2a; color: var(--yellow); border: 1px solid var(--yellow); }
         .btn-green { background: var(--green); color: white; }
+        .btn-red { background: var(--red); color: white; }
         .post {
             background: var(--dark);
             border: 1px solid var(--gray);
@@ -260,6 +248,7 @@
             display: flex;
             gap: 8px;
             margin-top: 12px;
+            flex-wrap: wrap;
         }
         .driver-info {
             background: rgba(255, 215, 0, 0.1);
@@ -288,7 +277,6 @@
             padding: 40px 20px;
             color: var(--gray-light);
         }
-        .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
         .toast {
             position: fixed;
             bottom: 100px;
@@ -306,16 +294,6 @@
             text-align: center;
         }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-        .refresh-btn {
-            background: var(--gray);
-            border: 1px solid var(--gray-light);
-            color: white;
-            padding: 12px;
-            border-radius: 12px;
-            width: 100%;
-            margin-bottom: 16px;
-            cursor: pointer;
-        }
         .nav {
             position: fixed;
             bottom: 0;
@@ -475,14 +453,38 @@
             background: transparent;
             padding-left: 8px;
             flex: 1;
-            color: white;
+        }
+        .city-status {
+            background: var(--gray);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .distance-badge {
+            background: rgba(255, 215, 0, 0.2);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 12px;
+            display: inline-block;
+            margin-left: 8px;
+        }
+        .subscription-info {
+            background: rgba(0, 200, 81, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+            border-left: 3px solid var(--green);
         }
     </style>
 </head>
 <body>
+    <div class="beta-badge">🚧 БЕТА-ВЕРСИЯ</div>
     <div class="loading" id="loading">
         <div class="spinner"></div>
-        <div>НЕЯША загружается...</div>
+        <div>НеЯша загружается...</div>
     </div>
 
     <div class="content">
@@ -490,15 +492,31 @@
         <div id="guestPage" class="page">
             <div class="card">
                 <div class="brand">
-                    <div class="brand-icon">🚕</div>
-                    <div class="brand-text"><h1>НЕЯША</h1><span>Такси без комиссии</span></div>
+                    <!-- SVG логотип вместо машинки и текста -->
+                    <svg class="logo-svg" width="400" height="140" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="140" fill="#0a0a0a"/>
+                        <!-- Смайлик -->
+                        <g transform="translate(10, 20)">
+                            <circle cx="50" cy="50" r="48" fill="#FFD700"/>
+                            <text x="35" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#000000">N</text>
+                            <text x="65" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#FF0000">Y</text>
+                            <path d="M 25 65 Q 50 85 75 65" stroke="#000000" stroke-width="4" fill="none" stroke-linecap="round"/>
+                        </g>
+                        <!-- Текст НеЯша -->
+                        <g transform="translate(120, 30)">
+                            <text x="0" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FF0000">Не</text>
+                            <text x="75" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FFFFFF">Яша</text>
+                        </g>
+                        <!-- Подзаголовок -->
+                        <text x="120" y="105" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">такси без комиссии</text>
+                    </svg>
                 </div>
             </div>
             <div class="card guest-instruction">
                 <h3>📱 Как сделать заказ:</h3>
                 <ol>
                     <li>Откройте Яндекс.Такси и узнайте точную стоимость поездки</li>
-                    <li>Введите эту же цену в приложении НЕЯША</li>
+                    <li>Введите эту же цену в приложении НеЯша</li>
                     <li>Сохраните скриншот из Яндекс.Такси — покажете его водителю при встрече</li>
                 </ol>
                 <h3>✅ Важно:</h3>
@@ -519,12 +537,24 @@
             </div>
         </div>
 
-        <!-- Страница авторизации (выбор роли + телефон) -->
+        <!-- Страница авторизации -->
         <div id="authPage" class="page">
             <div class="card">
                 <div class="brand">
-                    <div class="brand-icon">🚕</div>
-                    <div class="brand-text"><h1>НЕЯША</h1><span>Такси без комиссии</span></div>
+                    <svg class="logo-svg" width="400" height="140" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="140" fill="#0a0a0a"/>
+                        <g transform="translate(10, 20)">
+                            <circle cx="50" cy="50" r="48" fill="#FFD700"/>
+                            <text x="35" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#000000">N</text>
+                            <text x="65" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#FF0000">Y</text>
+                            <path d="M 25 65 Q 50 85 75 65" stroke="#000000" stroke-width="4" fill="none" stroke-linecap="round"/>
+                        </g>
+                        <g transform="translate(120, 30)">
+                            <text x="0" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FF0000">Не</text>
+                            <text x="75" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FFFFFF">Яша</text>
+                        </g>
+                        <text x="120" y="105" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">такси без комиссии</text>
+                    </svg>
                 </div>
             </div>
             <div class="card">
@@ -549,12 +579,24 @@
             </div>
         </div>
 
-        <!-- Страница регистрации (доп. поля) -->
+        <!-- Страница регистрации -->
         <div id="registerPage" class="page">
             <div class="card">
                 <div class="brand">
-                    <div class="brand-icon">🚕</div>
-                    <div class="brand-text"><h1>НЕЯША</h1><span>Завершение регистрации</span></div>
+                    <svg class="logo-svg" width="400" height="140" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="140" fill="#0a0a0a"/>
+                        <g transform="translate(10, 20)">
+                            <circle cx="50" cy="50" r="48" fill="#FFD700"/>
+                            <text x="35" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#000000">N</text>
+                            <text x="65" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#FF0000">Y</text>
+                            <path d="M 25 65 Q 50 85 75 65" stroke="#000000" stroke-width="4" fill="none" stroke-linecap="round"/>
+                        </g>
+                        <g transform="translate(120, 30)">
+                            <text x="0" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FF0000">Не</text>
+                            <text x="75" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FFFFFF">Яша</text>
+                        </g>
+                        <text x="120" y="105" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">такси без комиссии</text>
+                    </svg>
                 </div>
             </div>
             <div class="card">
@@ -575,6 +617,14 @@
                         <label class="form-label">Госномер</label>
                         <input type="text" class="input" id="regCarPlate" placeholder="А777ВС 123">
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">Номер лицензии (разрешение на такси)</label>
+                        <input type="text" class="input" id="regLicense" placeholder="АБ123456">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Номер водительского удостоверения</label>
+                        <input type="text" class="input" id="regDriverLicense" placeholder="99 99 123456">
+                    </div>
                 </div>
                 <button class="btn btn-primary" style="width:100%" onclick="registerNewUser()">Зарегистрироваться</button>
                 <div style="margin-top: 16px; text-align: center;">
@@ -587,13 +637,27 @@
         <div id="driverPage" class="page">
             <div class="card">
                 <div class="brand">
-                    <div class="brand-icon">🚕</div>
-                    <div class="brand-text"><h1>НЕЯША</h1><span>Такси без комиссии</span></div>
+                    <svg class="logo-svg" width="400" height="140" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="140" fill="#0a0a0a"/>
+                        <g transform="translate(10, 20)">
+                            <circle cx="50" cy="50" r="48" fill="#FFD700"/>
+                            <text x="35" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#000000">N</text>
+                            <text x="65" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#FF0000">Y</text>
+                            <path d="M 25 65 Q 50 85 75 65" stroke="#000000" stroke-width="4" fill="none" stroke-linecap="round"/>
+                        </g>
+                        <g transform="translate(120, 30)">
+                            <text x="0" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FF0000">Не</text>
+                            <text x="75" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FFFFFF">Яша</text>
+                        </g>
+                        <text x="120" y="105" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">такси без комиссии</text>
+                    </svg>
                     <div class="role-tag">🚕 Водитель</div>
                 </div>
             </div>
-            <div class="section-title">📍 Мой город</div>
-            <div class="city-selector" id="driverCitySelector"></div>
+            <div class="city-status" id="driverCityStatus">
+                <span>📍 Город: <span id="driverCityName">не определён</span></span>
+                <button class="btn btn-secondary" id="detectCityBtn" style="padding: 8px 16px; font-size: 12px;" onclick="detectDriverCity()">Определить город</button>
+            </div>
             <div style="display:flex; gap:8px; margin-bottom:16px">
                 <button class="btn btn-secondary" style="flex:1" onclick="showDriverOrders('active')">📋 Активные заказы</button>
                 <button class="btn btn-secondary" style="flex:1" onclick="showDriverOrders('taken')">✅ Мои заказы</button>
@@ -605,7 +669,7 @@
         <div id="passengerPage" class="page">
             <div class="passenger-header" style="background:linear-gradient(135deg, #0077ff, #00c6ff); border-radius:20px; padding:28px 20px; text-align:center; margin-bottom:16px">
                 <div class="passenger-logo" style="font-size:44px">👋</div>
-                <div class="passenger-title" style="font-size:32px; font-weight:900">НЕЯША</div>
+                <div class="passenger-title" style="font-size:32px; font-weight:900">НеЯша</div>
                 <div class="passenger-subtitle">Такси без комиссии</div>
                 <div class="role-tag" style="background: rgba(0,0,0,0.3); margin-top: 8px;">👤 Пассажир</div>
             </div>
@@ -620,8 +684,21 @@
         <div id="profilePage" class="page">
             <div class="card">
                 <div class="brand">
-                    <div class="brand-icon">👤</div>
-                    <div class="brand-text"><h1>Профиль</h1><span id="profileRoleSpan"></span></div>
+                    <svg class="logo-svg" width="400" height="140" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="140" fill="#0a0a0a"/>
+                        <g transform="translate(10, 20)">
+                            <circle cx="50" cy="50" r="48" fill="#FFD700"/>
+                            <text x="35" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#000000">N</text>
+                            <text x="65" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#FF0000">Y</text>
+                            <path d="M 25 65 Q 50 85 75 65" stroke="#000000" stroke-width="4" fill="none" stroke-linecap="round"/>
+                        </g>
+                        <g transform="translate(120, 30)">
+                            <text x="0" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FF0000">Не</text>
+                            <text x="75" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FFFFFF">Яша</text>
+                        </g>
+                        <text x="120" y="105" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">такси без комиссии</text>
+                    </svg>
+                    <div class="role-tag" id="profileRoleSpan" style="margin-left: auto;"></div>
                 </div>
             </div>
             <div class="card">
@@ -637,6 +714,19 @@
                     <div class="form-group">
                         <label class="form-label">Автомобиль</label>
                         <div id="profileCar" class="input" style="background: #2a2a2a;" readonly>—</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Лицензия (разрешение)</label>
+                        <div id="profileLicense" class="input" style="background: #2a2a2a;" readonly>—</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Водительское удостоверение</label>
+                        <div id="profileDriverLicense" class="input" style="background: #2a2a2a;" readonly>—</div>
+                    </div>
+                    <div class="form-group" id="subscriptionInfo">
+                        <label class="form-label">Подписка</label>
+                        <div id="profileSubscription" class="input" style="background: #2a2a2a;" readonly>—</div>
+                        <button class="btn btn-primary" style="margin-top: 8px; width:100%" onclick="renewSubscription()">Продлить подписку (тест 1000₽)</button>
                     </div>
                 </div>
                 <button class="btn btn-secondary" style="width:100%; margin-top: 16px;" onclick="logout()">🚪 Выйти</button>
@@ -658,7 +748,9 @@
         const API_URL = '';
         let currentUser = null;
         let currentRole = null;
-        let currentDriverCity = 'Краснодар';
+        let currentDriverCity = null;
+        let currentDriverLat = null;
+        let currentDriverLon = null;
         let currentDriverView = 'active';
         let currentPassengerView = 'create';
         let currentClass = 'econom';
@@ -668,18 +760,45 @@
         let selectedRating = 0;
         let currentRatingOrderId = null;
         let currentRatingType = null;
+        let lastOrderIds = [];
+        let notificationPermissionGranted = false;
 
         const CITIES = ['Краснодар', 'Анапа', 'Геленджик', 'Сочи', 'Адлер', 'Новороссийск', 'Туапсе', 'Ейск', 'Кропоткин', 'Армавир'];
 
-        // ---------- Нормализация номера ----------
-        function normalizePhone(phoneDigits) {
-            // phoneDigits - это 10 цифр, которые ввёл пользователь
-            let digits = phoneDigits.replace(/\D/g, '');
-            if (digits.length !== 10) return null;
-            return '+7' + digits;
+        // ---------- Уведомления ----------
+        function requestNotificationPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(perm => {
+                    notificationPermissionGranted = (perm === 'granted');
+                });
+            }
         }
 
-        // ---------- Инициализация при загрузке ----------
+        function playNotificationSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.frequency.value = 880;
+                gainNode.gain.value = 0.3;
+                oscillator.start();
+                gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
+                oscillator.stop(audioCtx.currentTime + 0.5);
+            } catch(e) { console.log('Audio not supported'); }
+        }
+
+        function sendNotification(title, body) {
+            if (notificationPermissionGranted && document.hidden) {
+                new Notification(title, { body, icon: 'https://rentdriver.ru/favicon.ico' });
+                playNotificationSound();
+            } else if (!document.hidden) {
+                showToast(body);
+            }
+        }
+
+        // ---------- Инициализация ----------
         window.onload = () => {
             setTimeout(() => {
                 const loader = document.getElementById('loading');
@@ -691,7 +810,10 @@
                     currentUser = JSON.parse(savedUser);
                     if (currentUser && currentUser.role) {
                         currentRole = currentUser.role;
-                        if (currentRole === 'driver') initDriverInterface();
+                        if (currentRole === 'driver') {
+                            initDriverInterface();
+                            requestNotificationPermission();
+                        }
                         else if (currentRole === 'passenger') initPassengerInterface();
                         else showGuestPage();
                     } else showGuestPage();
@@ -701,7 +823,17 @@
             }
         };
 
-        // ---------- Навигация между страницами ----------
+        function initDriverInterface() {
+            showDriverInterface();
+            refreshUserData();
+        }
+
+        function initPassengerInterface() {
+            showPassengerInterface();
+            refreshUserData();
+        }
+
+        // ---------- Навигация ----------
         function showGuestPage() {
             hideAllPages();
             document.getElementById('guestPage').classList.add('active');
@@ -727,6 +859,8 @@
                 document.getElementById('regCarModel').value = '';
                 document.getElementById('regCarColor').value = '';
                 document.getElementById('regCarPlate').value = '';
+                document.getElementById('regLicense').value = '';
+                document.getElementById('regDriverLicense').value = '';
             }
         }
 
@@ -734,11 +868,11 @@
             hideAllPages();
             document.getElementById('driverPage').classList.add('active');
             document.getElementById('navMain').classList.add('active');
-            renderCitySelector();
+            loadDriverCityFromStorage();
             loadDriverOrders();
             if (refreshOrdersInterval) clearInterval(refreshOrdersInterval);
             refreshOrdersInterval = setInterval(() => {
-                loadDriverOrders();
+                loadDriverOrders(true);
             }, 5000);
         }
 
@@ -760,10 +894,21 @@
             if (currentUser) {
                 document.getElementById('profileName').innerText = currentUser.name;
                 document.getElementById('profileRating').innerText = currentUser.rating ? currentUser.rating.toFixed(1) : '5.0';
-                document.getElementById('profileRoleSpan').innerText = currentRole === 'driver' ? 'Водитель' : 'Пассажир';
-                if (currentRole === 'driver' && currentUser.car) {
+                // Роль уже отображается через .role-tag
+                if (currentRole === 'driver') {
                     document.getElementById('profileCarInfo').style.display = 'block';
-                    document.getElementById('profileCar').innerText = `${currentUser.car.color} ${currentUser.car.model}, ${currentUser.car.plate}`;
+                    document.getElementById('profileCar').innerText = currentUser.car ? `${currentUser.car.color} ${currentUser.car.model}, ${currentUser.car.plate}` : 'не указано';
+                    document.getElementById('profileLicense').innerText = currentUser.license || 'не указано';
+                    document.getElementById('profileDriverLicense').innerText = currentUser.driver_license || 'не указано';
+                    let subText = '';
+                    if (currentUser.free_orders > 0) {
+                        subText = `Бесплатные заказы: ${currentUser.free_orders} (осталось)`;
+                    } else if (currentUser.subscription_until && new Date(currentUser.subscription_until) > new Date()) {
+                        subText = `Подписка активна до ${new Date(currentUser.subscription_until).toLocaleDateString()}`;
+                    } else {
+                        subText = `Нет активной подписки. Оформите за 1000 ₽/мес.`;
+                    }
+                    document.getElementById('profileSubscription').innerText = subText;
                 } else {
                     document.getElementById('profileCarInfo').style.display = 'none';
                 }
@@ -789,6 +934,63 @@
             }
         }
 
+        // ---------- Геолокация водителя ----------
+        function loadDriverCityFromStorage() {
+            const savedCity = localStorage.getItem('driver_city');
+            const savedLat = localStorage.getItem('driver_lat');
+            const savedLon = localStorage.getItem('driver_lon');
+            if (savedCity && savedLat && savedLon) {
+                currentDriverCity = savedCity;
+                currentDriverLat = parseFloat(savedLat);
+                currentDriverLon = parseFloat(savedLon);
+                document.getElementById('driverCityName').innerText = currentDriverCity;
+                document.getElementById('detectCityBtn').innerText = 'Обновить город';
+            } else {
+                document.getElementById('driverCityName').innerText = 'не определён';
+                document.getElementById('detectCityBtn').innerText = 'Определить город';
+                currentDriverCity = null;
+            }
+        }
+
+        async function detectDriverCity() {
+            if (!navigator.geolocation) {
+                showToast('Геолокация не поддерживается вашим браузером');
+                return;
+            }
+            showToast('Определение местоположения...');
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                try {
+                    const res = await fetch(`${API_URL}/index.php`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'getCityFromCoords', lat, lon })
+                    });
+                    const data = await res.json();
+                    if (data.success && data.city) {
+                        currentDriverCity = data.city;
+                        currentDriverLat = lat;
+                        currentDriverLon = lon;
+                        localStorage.setItem('driver_city', currentDriverCity);
+                        localStorage.setItem('driver_lat', lat);
+                        localStorage.setItem('driver_lon', lon);
+                        document.getElementById('driverCityName').innerText = currentDriverCity;
+                        document.getElementById('detectCityBtn').innerText = 'Обновить город';
+                        showToast(`Ваш город: ${currentDriverCity}`);
+                        loadDriverOrders();
+                    } else {
+                        showToast('Не удалось определить город');
+                    }
+                } catch(e) {
+                    showToast('Ошибка связи с сервером');
+                }
+            }, (error) => {
+                console.error(error);
+                showToast('Не удалось получить геолокацию. Разрешите доступ.');
+            });
+        }
+
         // ---------- Авторизация ----------
         let pendingAuthRole = 'driver';
 
@@ -809,13 +1011,19 @@
             }
         }
 
+        function normalizePhoneFront(phoneDigits) {
+            let digits = phoneDigits.replace(/\D/g, '');
+            if (digits.length !== 10) return null;
+            return '+7' + digits;
+        }
+
         async function checkAndProceed() {
             const phoneDigits = document.getElementById('authPhone').value.trim();
             if (!phoneDigits || phoneDigits.length !== 10 || !/^\d+$/.test(phoneDigits)) {
                 showToast('Введите 10 цифр номера телефона (например, 9123456789)');
                 return;
             }
-            const phone = normalizePhone(phoneDigits);
+            const phone = normalizePhoneFront(phoneDigits);
             if (!phone) { showToast('Неверный формат номера'); return; }
             const role = pendingAuthRole;
             showToast('Проверяем...');
@@ -830,8 +1038,10 @@
                     currentUser = data.user;
                     currentRole = role;
                     localStorage.setItem('neusha_user', JSON.stringify(currentUser));
-                    if (role === 'driver') initDriverInterface();
-                    else initPassengerInterface();
+                    if (role === 'driver') {
+                        initDriverInterface();
+                        requestNotificationPermission();
+                    } else initPassengerInterface();
                 } else if (data.status === 'wrong_role') {
                     showToast(`Этот номер зарегистрирован как ${data.roleExists === 'driver' ? 'водитель' : 'пассажир'}. Войдите под своей ролью.`);
                 } else if (data.status === 'not_exists') {
@@ -851,26 +1061,34 @@
             const role = window.pendingRegRole;
             const phone = window.pendingRegPhone;
             let car = null;
+            let license = null;
+            let driverLicense = null;
             if (role === 'driver') {
                 const model = document.getElementById('regCarModel').value.trim();
                 const color = document.getElementById('regCarColor').value.trim();
                 const plate = document.getElementById('regCarPlate').value.trim();
                 if (!model || !color || !plate) { showToast('Заполните данные об авто'); return; }
                 car = { model, color, plate };
+                license = document.getElementById('regLicense').value.trim();
+                driverLicense = document.getElementById('regDriverLicense').value.trim();
+                if (!license) { showToast('Введите номер лицензии (разрешение на такси)'); return; }
+                if (!driverLicense) { showToast('Введите номер водительского удостоверения'); return; }
             }
             try {
                 const res = await fetch(`${API_URL}/index.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'register', role, phone, name, car })
+                    body: JSON.stringify({ action: 'register', role, phone, name, car, license, driverLicense })
                 });
                 const data = await res.json();
                 if (data.success) {
                     currentUser = data.user;
                     currentRole = role;
                     localStorage.setItem('neusha_user', JSON.stringify(currentUser));
-                    if (role === 'driver') initDriverInterface();
-                    else initPassengerInterface();
+                    if (role === 'driver') {
+                        initDriverInterface();
+                        requestNotificationPermission();
+                    } else initPassengerInterface();
                 } else {
                     showToast(data.error || 'Ошибка регистрации');
                 }
@@ -881,23 +1099,16 @@
 
         function logout() {
             localStorage.removeItem('neusha_user');
+            localStorage.removeItem('driver_city');
+            localStorage.removeItem('driver_lat');
+            localStorage.removeItem('driver_lon');
             currentUser = null;
             currentRole = null;
+            currentDriverCity = null;
             if (refreshOrdersInterval) clearInterval(refreshOrdersInterval);
             if (chatInterval) clearInterval(chatInterval);
             showGuestPage();
             showToast('Вы вышли из системы');
-        }
-
-        // ---------- Инициализация интерфейсов ----------
-        function initDriverInterface() {
-            showDriverInterface();
-            refreshUserData();
-        }
-
-        function initPassengerInterface() {
-            showPassengerInterface();
-            refreshUserData();
         }
 
         async function refreshUserData() {
@@ -916,23 +1127,34 @@
             } catch(e) {}
         }
 
+        async function renewSubscription() {
+            if (currentRole !== 'driver') return;
+            showToast('Оформление подписки (тестовый режим)...');
+            try {
+                const res = await fetch(`${API_URL}/index.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'renewSubscription', driverId: currentUser.id })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Подписка продлена на 30 дней!');
+                    await refreshUserData();
+                    showProfilePage();
+                } else {
+                    showToast(data.error || 'Ошибка');
+                }
+            } catch(e) { showToast('Ошибка'); }
+        }
+
         // ---------- Функции водителя ----------
-        function renderCitySelector() {
-            const container = document.getElementById('driverCitySelector');
-            if (!container) return;
-            container.innerHTML = CITIES.map(city => `<button class="city-btn ${currentDriverCity === city ? 'active' : ''}" onclick="setDriverCity('${city}')">${city}</button>`).join('');
-        }
-
-        function setDriverCity(city) {
-            currentDriverCity = city;
-            renderCitySelector();
-            loadDriverOrders();
-        }
-
-        async function loadDriverOrders() {
-            if (!currentUser) return;
+        async function loadDriverOrders(checkForNew = false) {
+            if (!currentUser || !currentDriverCity) {
+                const container = document.getElementById('driverOrdersContainer');
+                if (container) container.innerHTML = '<div class="empty-state">📍 Сначала определите ваш город (кнопка выше)</div>';
+                return;
+            }
             const container = document.getElementById('driverOrdersContainer');
-            if (!container) return;
             container.innerHTML = '<div class="empty-state">🔄 Загрузка...</div>';
             try {
                 const res = await fetch(`${API_URL}/index.php`);
@@ -940,16 +1162,46 @@
                 let orders = data.orders || [];
                 if (currentDriverView === 'active') {
                     orders = orders.filter(o => o.status === 'active' && o.city === currentDriverCity);
+                    if (checkForNew && lastOrderIds.length > 0) {
+                        const newOrderIds = orders.map(o => o.id).filter(id => !lastOrderIds.includes(id));
+                        if (newOrderIds.length > 0) {
+                            sendNotification('Новый заказ!', `Появился новый заказ в городе ${currentDriverCity}`);
+                        }
+                    }
+                    lastOrderIds = orders.map(o => o.id);
                     if (orders.length === 0) { container.innerHTML = '<div class="empty-state">📭 Нет активных заказов в вашем городе</div>'; return; }
-                    container.innerHTML = orders.map(order => `
-                        <div class="post">
-                            <div class="post-header"><div class="user-info"><div class="user-avatar">👤</div><div><strong>${escapeHtml(order.userName)}</strong><br><span style="font-size:11px">⭐ ${order.passengerRating || 5.0}</span><br><span style="font-size:10px">${order.class === 'econom' ? '🚕 Эконом' : order.class === 'comfort' ? '🚗 Комфорт' : '⭐ Комфорт+'}</span></div></div><div class="post-price">${order.price} ₽</div></div>
-                            <div class="route-point"><div class="route-dot"></div>${escapeHtml(order.from)}</div>
-                            <div class="route-point"><div class="route-dot to"></div>${escapeHtml(order.to)}</div>
-                            ${order.comment ? `<div class="comment-box">💬 ${escapeHtml(order.comment)}</div>` : ''}
-                            <div class="actions"><button class="btn btn-secondary" onclick="skipOrder('${order.id}')">Пропустить</button><button class="btn btn-primary" onclick="acceptOrder('${order.id}')">✅ Принять заказ</button></div>
-                        </div>
-                    `).join('');
+                    container.innerHTML = orders.map(order => {
+                        let distanceText = '';
+                        if (order.from_lat && order.from_lon && currentDriverLat && currentDriverLon) {
+                            const dist = getDistanceFromLatLonInKm(currentDriverLat, currentDriverLon, order.from_lat, order.from_lon);
+                            const minutes = Math.round(dist * 2);
+                            distanceText = `<span class="distance-badge">🚗 ${dist.toFixed(1)} км, ~${minutes} мин</span>`;
+                        }
+                        return `
+                            <div class="post">
+                                <div class="post-header">
+                                    <div class="user-info">
+                                        <div class="user-avatar">👤</div>
+                                        <div>
+                                            <strong>${escapeHtml(order.userName)}</strong><br>
+                                            <span style="font-size:11px">⭐ ${order.passengerRating || 5.0}</span><br>
+                                            <span style="font-size:10px">${order.class === 'econom' ? '🚕 Эконом' : order.class === 'comfort' ? '🚗 Комфорт' : '⭐ Комфорт+'}</span>
+                                            ${distanceText}
+                                        </div>
+                                    </div>
+                                    <div class="post-price">${order.price} ₽</div>
+                                </div>
+                                <div class="route-point"><div class="route-dot"></div>${escapeHtml(order.from)}</div>
+                                <div class="route-point"><div class="route-dot to"></div>${escapeHtml(order.to)}</div>
+                                ${order.comment ? `<div class="comment-box">💬 ${escapeHtml(order.comment)}</div>` : ''}
+                                <div class="actions">
+                                    <button class="btn btn-secondary" onclick="skipOrder('${order.id}')">Пропустить</button>
+                                    <button class="btn btn-primary" onclick="acceptOrder('${order.id}')">✅ Принять заказ</button>
+                                    ${order.from_lat && order.from_lon ? `<button class="btn btn-secondary" onclick="openNavigator(${order.from_lat}, ${order.from_lon})">🧭 Маршрут</button>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
                 } else {
                     orders = orders.filter(o => o.status === 'taken' && o.driverId === currentUser.id);
                     if (orders.length === 0) { container.innerHTML = '<div class="empty-state">✅ Нет принятых заказов</div>'; return; }
@@ -958,7 +1210,11 @@
                             <div class="post-header"><div><strong>${escapeHtml(order.userName)}</strong><br>⭐ ${order.passengerRating || 5.0}</div><div class="post-price">${order.price} ₽</div></div>
                             <div class="route-point"><div class="route-dot"></div>${escapeHtml(order.from)}</div>
                             <div class="route-point"><div class="route-dot to"></div>${escapeHtml(order.to)}</div>
-                            <div class="actions"><button class="btn btn-chat" onclick="openChat('${order.id}')">💬 Чат</button><button class="btn btn-green" onclick="completeOrder('${order.id}')">✅ Завершить поездку</button></div>
+                            <div class="actions">
+                                <button class="btn btn-chat" onclick="openChat('${order.id}')">💬 Чат</button>
+                                <button class="btn btn-green" onclick="completeOrder('${order.id}')">✅ Завершить поездку</button>
+                                ${order.from_lat && order.from_lon ? `<button class="btn btn-secondary" onclick="openNavigator(${order.from_lat}, ${order.from_lon})">🧭 Маршрут</button>` : ''}
+                            </div>
                         </div>
                     `).join('');
                 }
@@ -971,6 +1227,10 @@
         }
 
         async function acceptOrder(orderId) {
+            if (currentUser.free_orders <= 0 && (!currentUser.subscription_until || new Date(currentUser.subscription_until) < new Date())) {
+                showToast('У вас закончились бесплатные заказы. Оформите подписку в профиле за 1000 ₽/мес.');
+                return;
+            }
             try {
                 const resCheck = await fetch(`${API_URL}/index.php`);
                 const data = await resCheck.json();
@@ -985,8 +1245,13 @@
                     body: JSON.stringify({ action: 'accept', orderId, driverId: currentUser.id, driverName: currentUser.name, driverCar: currentUser.car })
                 });
                 const acceptData = await res.json();
-                if (acceptData.success) { showToast('✅ Заказ принят!'); loadDriverOrders(); }
-                else { showToast(acceptData.error || 'Ошибка'); }
+                if (acceptData.success) {
+                    showToast('✅ Заказ принят!');
+                    await refreshUserData();
+                    loadDriverOrders();
+                } else {
+                    showToast(acceptData.error || 'Ошибка');
+                }
             } catch(e) { showToast('Ошибка'); }
         }
 
@@ -1049,7 +1314,6 @@
 
         async function loadPassengerOrders() {
             const container = document.getElementById('passengerContainer');
-            if (!container) return;
             container.innerHTML = '<div class="empty-state">🔄 Загрузка...</div>';
             try {
                 const res = await fetch(`${API_URL}/index.php`);
@@ -1106,7 +1370,27 @@
             showRatingModal();
         }
 
-        // ---------- Общие функции (чат, оценки) ----------
+        // ---------- Общие функции ----------
+        function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+        function deg2rad(deg) { return deg * (Math.PI/180); }
+
+        function openNavigator(lat, lon) {
+            const url = `yandexnavi://build_route_on_map?lat_to=${lat}&lon_to=${lon}`;
+            window.location.href = url;
+            setTimeout(() => {
+                window.open(`https://yandex.ru/maps/?rtext=~${lat},${lon}&rtt=auto`, '_blank');
+            }, 500);
+        }
+
         async function openChat(orderId) {
             currentChatOrderId = orderId;
             document.getElementById('chatTitle').innerHTML = `💬 Чат`;
@@ -1205,1047 +1489,6 @@
         }
 
         function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
-    </script>
-    <script type="text/javascript">
-  window.onload = function() {
-    if (typeof VK !== 'undefined') {
-      VK.init({apiId: YOUR_APP_ID}); // Замени YOUR_APP_ID на ID своего приложения в VK
-      VK.callMethod("showLoadingBox", "Загрузка...");
-      VK.callMethod("hideLoadingBox");
-    }
-  }
-</script>
-</body>
-</html>            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--black);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            gap: 20px;
-        }
-
-        .loading.hidden { display: none; }
-
-        .spinner {
-            width: 48px;
-            height: 48px;
-            border: 3px solid var(--gray);
-            border-top-color: var(--yellow);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .role-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(20, 20, 20, 0.98);
-            backdrop-filter: blur(10px);
-            border-bottom: 2px solid var(--yellow);
-            z-index: 1000;
-            display: flex;
-            padding: 8px 12px;
-            padding-top: calc(8px + env(safe-area-inset-top));
-            gap: 8px;
-        }
-
-        .role-btn {
-            flex: 1;
-            padding: 12px;
-            background: var(--gray);
-            border: 1.5px solid var(--gray-light);
-            border-radius: 12px;
-            color: var(--gray-light);
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-        }
-
-        .role-btn.active {
-            background: var(--yellow);
-            border-color: var(--yellow);
-            color: var(--black);
-        }
-
-        .role-btn.passenger.active {
-            background: var(--vk-blue);
-            border-color: var(--vk-blue);
-            color: white;
-        }
-
-        .content {
-            margin-top: calc(64px + env(safe-area-inset-top));
-        }
-
-        .page {
-            display: none;
-            padding: 12px;
-            padding-bottom: calc(12px + env(safe-area-inset-bottom));
-        }
-
-        .page.active { display: block; animation: fadeIn 0.3s ease; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .card {
-            background: var(--dark);
-            border: 1px solid var(--gray);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .brand-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--yellow);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-        }
-
-        .brand-text h1 {
-            font-size: 24px;
-            font-weight: 900;
-            color: var(--yellow);
-            text-transform: uppercase;
-        }
-
-        .brand-text span {
-            font-size: 11px;
-            color: var(--gray-light);
-        }
-
-        .section-title {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--yellow);
-            text-transform: uppercase;
-            margin: 16px 0 12px;
-        }
-
-        /* City selector */
-        .city-selector {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-
-        .city-btn {
-            padding: 10px 16px;
-            background: var(--gray);
-            border: 1px solid var(--gray-light);
-            border-radius: 20px;
-            color: var(--gray-light);
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .city-btn.active {
-            background: var(--yellow);
-            border-color: var(--yellow);
-            color: var(--black);
-        }
-
-        .post {
-            background: var(--dark);
-            border: 1px solid var(--gray);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .post.removing {
-            opacity: 0.3;
-            transform: translateX(-100%);
-        }
-
-        .post-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--gray);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            overflow: hidden;
-        }
-
-        .user-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .user-meta h3 {
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .user-rating {
-            font-size: 13px;
-            color: var(--gray-light);
-        }
-
-        .post-price {
-            font-size: 24px;
-            font-weight: 900;
-            color: var(--yellow);
-        }
-
-        .route {
-            margin-bottom: 12px;
-        }
-
-        .route-point {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        .route-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--yellow);
-            flex-shrink: 0;
-        }
-
-        .route-dot.to {
-            background: var(--orange);
-        }
-
-        .post-meta {
-            font-size: 12px;
-            color: var(--gray-light);
-            margin-bottom: 12px;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .post-city {
-            background: rgba(255, 215, 0, 0.2);
-            padding: 4px 8px;
-            border-radius: 8px;
-            color: var(--yellow);
-        }
-
-        .post-class {
-            display: inline-block;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 6px 12px;
-            border-radius: 8px;
-            background: var(--gray);
-            color: var(--yellow);
-            margin-bottom: 12px;
-        }
-
-        .comment-box {
-            font-size: 12px;
-            color: #aaa;
-            margin-top: 8px;
-            padding: 8px;
-            background: #1a1a1a;
-            border-radius: 8px;
-        }
-
-        .actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: all 0.2s ease;
-        }
-
-        .btn:active { transform: scale(0.98); }
-
-        .btn-primary { background: var(--yellow); color: var(--black); }
-        .btn-secondary { background: transparent; color: var(--gray-light); border: 1px solid var(--gray-light); }
-        .btn-vk { background: var(--vk-blue); color: white; }
-        .btn-chat { background: #2a2a2a; color: var(--yellow); border: 1px solid var(--yellow); }
-
-        .passenger-header {
-            background: linear-gradient(135deg, var(--vk-blue) 0%, #00c6ff 100%);
-            border-radius: 20px;
-            padding: 28px 20px;
-            text-align: center;
-            margin-bottom: 16px;
-        }
-
-        .passenger-logo { font-size: 44px; margin-bottom: 8px; }
-        .passenger-title { font-size: 32px; font-weight: 900; color: white; text-transform: uppercase; }
-        .passenger-subtitle { font-size: 14px; color: rgba(255,255,255,0.9); }
-
-        .input {
-            width: 100%;
-            background: var(--gray);
-            border: 1px solid var(--gray-light);
-            color: white;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 15px;
-            outline: none;
-        }
-
-        .input:focus { border-color: var(--vk-blue); }
-
-        .textarea {
-            width: 100%;
-            background: var(--gray);
-            border: 1px solid var(--gray-light);
-            color: white;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 15px;
-            outline: none;
-            resize: vertical;
-            font-family: inherit;
-        }
-
-        .textarea:focus { border-color: var(--vk-blue); }
-
-        .class-selector {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .class-btn {
-            flex: 1;
-            padding: 16px 8px;
-            background: var(--gray);
-            border: 2px solid var(--gray-light);
-            border-radius: 12px;
-            color: var(--gray-light);
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s ease;
-        }
-
-        .class-btn.active {
-            border-color: var(--yellow);
-            color: var(--yellow);
-            background: rgba(255, 215, 0, 0.1);
-        }
-
-        .class-btn .emoji {
-            font-size: 24px;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .form-group { margin-bottom: 16px; }
-
-        .form-label {
-            font-size: 13px;
-            color: var(--gray-light);
-            text-transform: uppercase;
-            font-weight: 700;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .hint {
-            font-size: 13px;
-            color: var(--gray-light);
-            margin-top: 12px;
-            padding: 12px;
-            background: var(--gray);
-            border-radius: 12px;
-            line-height: 1.5;
-        }
-
-        .hint-icon { color: var(--yellow); margin-right: 4px; }
-
-        .search-btn {
-            width: 100%;
-            padding: 22px;
-            background: linear-gradient(135deg, var(--vk-blue) 0%, #00c6ff 100%);
-            border: none;
-            border-radius: 16px;
-            color: white;
-            font-size: 18px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            margin-top: 16px;
-        }
-
-        .search-btn:active { transform: scale(0.98); }
-        .search-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--gray-light);
-        }
-
-        .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
-
-        .toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--dark);
-            border: 1px solid var(--yellow);
-            color: var(--white);
-            padding: 16px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            z-index: 9999;
-            opacity: 0;
-            transition: all 0.3s ease;
-            max-width: 90%;
-            text-align: center;
-        }
-
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-        .refresh-btn {
-            background: var(--gray);
-            border: 1px solid var(--gray-light);
-            color: var(--white);
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-bottom: 16px;
-            width: 100%;
-        }
-
-        /* Chat Modal */
-        .chat-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--black);
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-        }
-
-        .chat-modal.open {
-            transform: translateX(0);
-        }
-
-        .chat-header {
-            padding: 16px;
-            background: var(--dark);
-            border-bottom: 1px solid var(--yellow);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding-top: calc(16px + env(safe-area-inset-top));
-        }
-
-        .chat-back {
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: var(--yellow);
-        }
-
-        .chat-title {
-            flex: 1;
-            font-weight: 700;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 18px;
-            font-size: 14px;
-        }
-
-        .message.from-passenger {
-            background: var(--vk-blue);
-            color: white;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-
-        .message.from-driver {
-            background: var(--yellow);
-            color: var(--black);
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message-time {
-            font-size: 10px;
-            opacity: 0.7;
-            margin-top: 4px;
-        }
-
-        .chat-input-area {
-            padding: 12px;
-            background: var(--dark);
-            border-top: 1px solid var(--gray);
-            display: flex;
-            gap: 8px;
-            padding-bottom: calc(12px + env(safe-area-inset-bottom));
-        }
-
-        .chat-input {
-            flex: 1;
-            background: var(--gray);
-            border: 1px solid var(--gray-light);
-            color: white;
-            padding: 12px;
-            border-radius: 24px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .chat-send {
-            background: var(--yellow);
-            border: none;
-            border-radius: 24px;
-            padding: 0 20px;
-            font-size: 20px;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <div>НЕЯША загружается...</div>
-    </div>
-
-    <div class="role-bar">
-        <button class="role-btn active" onclick="setRole('driver')">🚕 Водитель</button>
-        <button class="role-btn passenger" onclick="setRole('passenger')">👤 Пассажир</button>
-    </div>
-
-    <div class="content">
-        <!-- DRIVER PAGE -->
-        <div id="driverPage" class="page active">
-            <div class="card">
-                <div class="brand">
-                    <div class="brand-icon">🚕</div>
-                    <div class="brand-text">
-                        <h1>НЕЯША</h1>
-                        <span>Такси без комиссии</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-title">📍 Мой город</div>
-            <div class="city-selector" id="driverCitySelector">
-                <button class="city-btn" data-city="Москва" onclick="setDriverCity('Москва')">Москва</button>
-                <button class="city-btn" data-city="СПб" onclick="setDriverCity('СПб')">СПб</button>
-                <button class="city-btn" data-city="Казань" onclick="setDriverCity('Казань')">Казань</button>
-                <button class="city-btn" data-city="Новосибирск" onclick="setDriverCity('Новосибирск')">Новосибирск</button>
-                <button class="city-btn" data-city="Екатеринбург" onclick="setDriverCity('Екатеринбург')">Екатеринбург</button>
-            </div>
-
-            <div class="section-title">📋 Заказы в моём городе</div>
-            <button class="refresh-btn" onclick="loadOrders()">🔄 Обновить список</button>
-            <div id="driverPosts"><div class="empty-state"><div class="empty-state-icon">🔄</div><div>Загрузка заказов...</div></div></div>
-        </div>
-
-        <!-- PASSENGER PAGE -->
-        <div id="passengerPage" class="page">
-            <div class="passenger-header">
-                <div class="passenger-logo">👋</div>
-                <div class="passenger-title">НЕЯША</div>
-                <div class="passenger-subtitle">Такси без комиссии</div>
-            </div>
-
-            <div class="card">
-                <div class="form-group">
-                    <label class="form-label">🌆 Город</label>
-                    <select class="input" id="citySelect">
-                        <option value="Москва">Москва</option>
-                        <option value="СПб">Санкт-Петербург</option>
-                        <option value="Казань">Казань</option>
-                        <option value="Новосибирск">Новосибирск</option>
-                        <option value="Екатеринбург">Екатеринбург</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Откуда</label>
-                    <input type="text" class="input" id="fromAddr" placeholder="Улица, дом" maxlength="100">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Куда</label>
-                    <input type="text" class="input" id="toAddr" placeholder="Улица, дом" maxlength="100">
-                </div>
-            </div>
-
-            <div class="card">
-                <label class="form-label">Класс автомобиля</label>
-                <div class="class-selector">
-                    <button class="class-btn active" onclick="setClass('econom', this)"><span class="emoji">🚕</span>Эконом</button>
-                    <button class="class-btn" onclick="setClass('comfort', this)"><span class="emoji">🚗</span>Комфорт</button>
-                    <button class="class-btn" onclick="setClass('comfortplus', this)"><span class="emoji">⭐</span>Комфорт+</button>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="form-group">
-                    <label class="form-label">💰 Ваша цена (₽)</label>
-                    <input type="number" class="input" id="priceInput" placeholder="Например: 300" min="50" max="50000" style="font-size: 28px; font-weight: 900; text-align: center;">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">💬 Комментарий (подъезд, этаж, домофон)</label>
-                    <textarea class="textarea" id="commentInput" rows="3" placeholder="Например: подъезд 3, домофон 123, 5 этаж, телефон 999-123-45-67"></textarea>
-                </div>
-                <div class="hint">
-                    <span class="hint-icon">💡</span>
-                    <strong>Как это работает:</strong><br>
-                    1. Откройте Яндекс.Такси и узнайте цену<br>
-                    2. Введите эту сумму здесь (без комиссии!)<br>
-                    3. Водитель свяжется с вами в чате после того, как возьмёт заказ
-                </div>
-                <button class="search-btn" id="createOrderBtn" onclick="createOrder()">СОЗДАТЬ ЗАКАЗ</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="toast" id="toast"></div>
-
-    <!-- Chat Modal -->
-    <div class="chat-modal" id="chatModal">
-        <div class="chat-header">
-            <button class="chat-back" onclick="closeChat()">←</button>
-            <div class="chat-title" id="chatTitle">Чат с пассажиром</div>
-        </div>
-        <div class="chat-messages" id="chatMessages"></div>
-        <div class="chat-input-area">
-            <input type="text" class="chat-input" id="chatInput" placeholder="Сообщение..." onkeypress="if(event.key==='Enter') sendMessage()">
-            <button class="chat-send" onclick="sendMessage()">📤</button>
-        </div>
-    </div>
-
-    <script>
-        const API_URL = 'https://demo.rentdriver.ru';
-        
-        let currentRole = 'driver';
-        let currentClass = 'econom';
-        let currentDriverCity = localStorage.getItem('driverCity') || 'Москва';
-        let userId = null;
-        let userName = 'Гость';
-        let userPhoto = null;
-        let vkBridgeAvailable = false;
-        let refreshInterval = null;
-        let currentChatOrderId = null;
-        let currentChatOrder = null;
-
-        // Принудительное скрытие загрузки через 3 секунды
-        setTimeout(() => {
-            const loader = document.getElementById('loading');
-            if (loader && !loader.classList.contains('hidden')) {
-                loader.classList.add('hidden');
-                if (currentRole === 'driver') loadOrders();
-            }
-        }, 3000);
-
-        async function initVK() {
-            try {
-                if (typeof vkBridge !== 'undefined') {
-                    await vkBridge.send('VKWebAppInit');
-                    vkBridgeAvailable = true;
-                    try {
-                        const userData = await vkBridge.send('VKWebAppGetUserInfo');
-                        userId = userData.id;
-                        userName = userData.first_name;
-                        userPhoto = userData.photo_100;
-                        console.log('VK user:', userName);
-                    } catch(e) { console.warn('Can\'t get user info'); }
-                }
-            } catch(e) { console.warn('VK Bridge error:', e); }
-
-            document.getElementById('loading').classList.add('hidden');
-            
-            // Подсветка выбранного города у водителя
-            highlightDriverCity();
-            
-            if (currentRole === 'driver') {
-                loadOrders();
-                refreshInterval = setInterval(loadOrders, 5000);
-            }
-        }
-
-        function highlightDriverCity() {
-            document.querySelectorAll('#driverCitySelector .city-btn').forEach(btn => {
-                if (btn.getAttribute('data-city') === currentDriverCity) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-        }
-
-        function setDriverCity(city) {
-            currentDriverCity = city;
-            localStorage.setItem('driverCity', city);
-            highlightDriverCity();
-            loadOrders();
-            showToast(`📍 Выбран город: ${city}`);
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-
-        async function loadOrders() {
-            const container = document.getElementById('driverPosts');
-            if (!container) return;
-            
-            container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🔄</div><div>Загрузка заказов...</div></div>`;
-
-            try {
-                const response = await fetch(`${API_URL}/index.php`);
-                const data = await response.json();
-
-                if (data.success && data.orders && data.orders.length > 0) {
-                    // Фильтруем заказы по городу водителя
-                    const filteredOrders = data.orders.filter(order => order.city === currentDriverCity);
-                    if (filteredOrders.length > 0) {
-                        renderOrders(filteredOrders);
-                    } else {
-                        container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📭</div><div>В городе ${currentDriverCity} пока нет заказов</div></div>`;
-                    }
-                } else {
-                    container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📭</div><div>Нет активных заказов</div></div>`;
-                }
-            } catch (error) {
-                console.error('Load error:', error);
-                container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠️</div><div>Ошибка загрузки</div></div>`;
-            }
-        }
-
-        function renderOrders(orders) {
-            const container = document.getElementById('driverPosts');
-            if (!container) return;
-
-            const reversedOrders = [...orders].reverse();
-            
-            container.innerHTML = reversedOrders.map(order => `
-                <div class="post" id="post-${order.id}">
-                    <div class="post-header">
-                        <div class="user-info">
-                            <div class="user-avatar">${order.userPhoto ? `<img src="${order.userPhoto}">` : '👤'}</div>
-                            <div class="user-meta">
-                                <h3>${escapeHtml(order.userName)}</h3>
-                                <div class="user-rating">#${order.id.slice(-4)}</div>
-                            </div>
-                        </div>
-                        <div class="post-price">${order.price} ₽</div>
-                    </div>
-                    <div class="post-class">${getClassEmoji(order.class)} ${getClassName(order.class)}</div>
-                    <div class="route">
-                        <div class="route-point"><div class="route-dot"></div>${escapeHtml(order.from)}</div>
-                        <div class="route-point"><div class="route-dot to"></div>${escapeHtml(order.to)}</div>
-                    </div>
-                    ${order.comment ? `<div class="comment-box">💬 ${escapeHtml(order.comment)}</div>` : ''}
-                    <div class="post-meta">
-                        <span class="post-city">📍 ${escapeHtml(order.city)}</span>
-                        <span>${formatTime(order.createdAt)}</span>
-                    </div>
-                    <div class="actions">
-                        <button class="btn btn-secondary" onclick="skipOrder('${order.id}')">Пропустить</button>
-                        <button class="btn btn-chat" onclick="openChat('${order.id}')">💬 Чат</button>
-                        <button class="btn btn-primary btn-vk" onclick="contactPassenger('${order.userId}', '${escapeHtml(order.userName)}')">Написать</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        async function openChat(orderId) {
-            currentChatOrderId = orderId;
-            
-            // Загружаем заказ с сервера
-            try {
-                const response = await fetch(`${API_URL}/index.php`);
-                const data = await response.json();
-                currentChatOrder = data.orders.find(o => o.id === orderId);
-                
-                if (currentChatOrder) {
-                    document.getElementById('chatTitle').innerHTML = `💬 Чат: ${escapeHtml(currentChatOrder.userName)}<br><span style="font-size:12px">${escapeHtml(currentChatOrder.from)} → ${escapeHtml(currentChatOrder.to)}</span>`;
-                    renderChatMessages();
-                    document.getElementById('chatModal').classList.add('open');
-                    
-                    // Начинаем проверять новые сообщения каждые 3 секунды
-                    if (window.chatInterval) clearInterval(window.chatInterval);
-                    window.chatInterval = setInterval(refreshChat, 3000);
-                }
-            } catch(e) {
-                showToast('Ошибка загрузки чата');
-            }
-        }
-
-        async function refreshChat() {
-            if (!currentChatOrderId) return;
-            try {
-                const response = await fetch(`${API_URL}/index.php`);
-                const data = await response.json();
-                const updatedOrder = data.orders.find(o => o.id === currentChatOrderId);
-                if (updatedOrder) {
-                    currentChatOrder = updatedOrder;
-                    renderChatMessages();
-                }
-            } catch(e) {}
-        }
-
-        function renderChatMessages() {
-            const container = document.getElementById('chatMessages');
-            if (!currentChatOrder || !currentChatOrder.chat || currentChatOrder.chat.length === 0) {
-                container.innerHTML = '<div class="empty-state" style="padding:20px">💬 Нет сообщений. Напишите что-нибудь...</div>';
-                return;
-            }
-            
-            container.innerHTML = currentChatOrder.chat.map(msg => `
-                <div class="message ${msg.from === 'passenger' ? 'from-passenger' : 'from-driver'}">
-                    ${escapeHtml(msg.text)}
-                    <div class="message-time">${new Date(msg.time * 1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
-                </div>
-            `).join('');
-            container.scrollTop = container.scrollHeight;
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const text = input.value.trim();
-            if (!text || !currentChatOrderId) return;
-            
-            input.value = '';
-            
-            // Определяем, кто отправляет
-            const from = currentRole === 'driver' ? 'driver' : 'passenger';
-            
-            try {
-                const response = await fetch(`${API_URL}/index.php`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'sendMessage',
-                        orderId: currentChatOrderId,
-                        message: { from, text, time: Math.floor(Date.now() / 1000) }
-                    })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    currentChatOrder = data.order;
-                    renderChatMessages();
-                } else {
-                    showToast('Ошибка отправки');
-                }
-            } catch(e) {
-                showToast('Ошибка отправки');
-            }
-        }
-
-        function closeChat() {
-            document.getElementById('chatModal').classList.remove('open');
-            if (window.chatInterval) {
-                clearInterval(window.chatInterval);
-                window.chatInterval = null;
-            }
-            currentChatOrderId = null;
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function formatTime(timestamp) {
-            const now = Math.floor(Date.now() / 1000);
-            const diff = now - timestamp;
-            if (diff < 60) return 'Только что';
-            if (diff < 3600) return `${Math.floor(diff / 60)} мин назад`;
-            if (diff < 86400) return `${Math.floor(diff / 3600)} ч назад`;
-            return `${Math.floor(diff / 86400)} дн назад`;
-        }
-
-        function getClassEmoji(cls) {
-            if (cls === 'econom') return '🚕';
-            if (cls === 'comfort') return '🚗';
-            return '⭐';
-        }
-
-        function getClassName(cls) {
-            if (cls === 'econom') return 'Эконом';
-            if (cls === 'comfort') return 'Комфорт';
-            return 'Комфорт+';
-        }
-
-        async function createOrder() {
-            const city = document.getElementById('citySelect').value;
-            const from = document.getElementById('fromAddr').value.trim();
-            const to = document.getElementById('toAddr').value.trim();
-            const price = document.getElementById('priceInput').value;
-            const comment = document.getElementById('commentInput').value.trim();
-
-            if (!from || !to) { showToast('❌ Укажите адреса'); return; }
-            if (!price || price < 50) { showToast('❌ Цена от 50 ₽'); return; }
-
-            const btn = document.getElementById('createOrderBtn');
-            btn.disabled = true;
-            btn.textContent = 'ОТПРАВКА...';
-
-            try {
-                const response = await fetch(`${API_URL}/index.php`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        city, from, to,
-                        price: parseInt(price),
-                        class: currentClass,
-                        comment: comment,
-                        userId: userId || 'guest',
-                        userName: userName,
-                        userPhoto: userPhoto,
-                        chat: []
-                    })
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    showToast(`✅ Заказ #${data.order.id.slice(-4)} создан! ${price} ₽`);
-                    document.getElementById('fromAddr').value = '';
-                    document.getElementById('toAddr').value = '';
-                    document.getElementById('priceInput').value = '';
-                    document.getElementById('commentInput').value = '';
-                } else {
-                    showToast('❌ ' + (data.error || 'Ошибка'));
-                }
-            } catch (error) {
-                showToast('❌ Нет связи с сервером');
-            }
-            btn.disabled = false;
-            btn.textContent = 'СОЗДАТЬ ЗАКАЗ';
-        }
-
-        async function skipOrder(orderId) {
-            const post = document.getElementById(`post-${orderId}`);
-            if (!post) return;
-            post.classList.add('removing');
-            try {
-                await fetch(`${API_URL}/index.php`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: orderId })
-                });
-                setTimeout(() => post.remove(), 300);
-            } catch(e) { post.classList.remove('removing'); }
-        }
-
-        function contactPassenger(passengerId, passengerName) {
-            if (!vkBridgeAvailable) { showToast(`Напишите ${passengerName} в VK`); return; }
-            if (confirm(`Написать ${passengerName}?`)) {
-                try { vkBridge.send('VKWebAppOpenProfile', { user_id: parseInt(passengerId) }); }
-                catch(e) { showToast(`VK ID: ${passengerId}`); }
-            }
-        }
-
-        function setRole(role) {
-            currentRole = role;
-            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
-            
-            if (role === 'driver') {
-                document.querySelector('.role-btn:first-child').classList.add('active');
-                document.getElementById('driverPage').classList.add('active');
-                document.getElementById('passengerPage').classList.remove('active');
-                if (refreshInterval) clearInterval(refreshInterval);
-                loadOrders();
-                refreshInterval = setInterval(loadOrders, 5000);
-            } else {
-                document.querySelector('.role-btn.passenger').classList.add('active');
-                document.getElementById('passengerPage').classList.add('active');
-                document.getElementById('driverPage').classList.remove('active');
-                if (refreshInterval) { clearInterval(refreshInterval); refreshInterval = null; }
-            }
-        }
-
-        function setClass(cls, btn) {
-            currentClass = cls;
-            document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        initVK();
     </script>
 </body>
 </html>
