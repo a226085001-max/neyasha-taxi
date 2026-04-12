@@ -3,7 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>НеЯша — Такси без комиссии (Бета)</title>
+    <title>НеЯша — такси без комиссии</title>
+    <meta name="description" content="НеЯша — такси без комиссии. Экономьте с нами, водители получают 100% оплаты. Краснодарский край.">
+    <meta name="keywords" content="неяша, такси без комиссии, заказать такси, такси Краснодар, rentdriver">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23FFD700'/%3E%3Ctext x='35' y='55' font-family='Arial' font-size='28' font-weight='bold' text-anchor='middle' fill='%23000000'%3EN%3C/text%3E%3Ctext x='65' y='55' font-family='Arial' font-size='28' font-weight='bold' text-anchor='middle' fill='%23FF0000'%3EY%3C/text%3E%3Cpath d='M30 70 Q50 85 70 70' stroke='%23000000' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+   <!-- Яндекс.Метрика -->
+<script type="text/javascript">...
+   <!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=108505363', 'ym');
+    ym(108505363, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/108505363" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
     <style>
         * {
             margin: 0;
@@ -35,6 +53,1545 @@
             top: 0;
             right: 0;
             background: var(--red);
+            color: white;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 10000;
+            border-bottom-left-radius: 8px;
+            opacity: 0.9;
+        }
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--black);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            gap: 20px;
+        }
+        .loading.hidden { display: none; }
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--gray);
+            border-top-color: var(--yellow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .content {
+            padding: 16px;
+            padding-top: calc(16px + env(safe-area-inset-top));
+            padding-bottom: calc(80px + env(safe-area-inset-bottom));
+        }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card {
+            background: var(--dark);
+            border: 1px solid var(--gray);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .logo-svg {
+            width: 320px;
+            max-width: 100%;
+            height: auto;
+            flex-shrink: 0;
+        }
+        @media (max-width: 500px) {
+            .brand {
+                gap: 8px;
+            }
+            .logo-svg {
+                width: 224px;
+            }
+        }
+        .section-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--yellow);
+            text-transform: uppercase;
+            margin: 16px 0 12px;
+        }
+        .input, .select {
+            width: 100%;
+            background: var(--gray);
+            border: 1px solid var(--gray-light);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+        }
+        .textarea {
+            width: 100%;
+            background: var(--gray);
+            border: 1px solid var(--gray-light);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        .class-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .class-btn {
+            flex: 1;
+            padding: 16px 8px;
+            background: var(--gray);
+            border: 2px solid var(--gray-light);
+            border-radius: 12px;
+            color: var(--gray-light);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+        }
+        .class-btn.active {
+            border-color: var(--yellow);
+            color: var(--yellow);
+            background: rgba(255, 215, 0, 0.1);
+        }
+        .class-btn .emoji {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .form-group { margin-bottom: 16px; }
+        .form-label {
+            font-size: 13px;
+            color: var(--gray-light);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .btn {
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--yellow); color: var(--black); }
+        .btn-secondary { background: transparent; color: var(--gray-light); border: 1px solid var(--gray-light); }
+        .btn-chat { background: #2a2a2a; color: var(--yellow); border: 1px solid var(--yellow); }
+        .btn-green { background: var(--green); color: white; }
+        .btn-red { background: var(--red); color: white; }
+        .post {
+            background: var(--dark);
+            border: 1px solid var(--gray);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 10px;
+        }
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            overflow: hidden;
+        }
+        .post-price {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--yellow);
+        }
+        .route-point {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .route-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--yellow);
+        }
+        .route-dot.to { background: var(--orange); }
+        .comment-box {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 8px;
+            padding: 8px;
+            background: #1a1a1a;
+            border-radius: 8px;
+        }
+        .actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .driver-info {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .rating-stars {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 16px 0;
+        }
+        .star {
+            font-size: 40px;
+            cursor: pointer;
+            color: var(--gray-light);
+            transition: all 0.1s;
+        }
+        .star.active { color: var(--yellow); }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-light);
+        }
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--dark);
+            border: 1px solid var(--yellow);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-width: 90%;
+            text-align: center;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(20, 20, 20, 0.98);
+            border-top: 1px solid var(--gray);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+            z-index: 1000;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--gray-light);
+            background: none;
+            border: none;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        .nav-item.active { color: var(--yellow); }
+        .modal, .qr-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        .modal.show, .qr-modal.show { opacity: 1; visibility: visible; }
+        .modal-content {
+            background: var(--dark);
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 90%;
+            width: 320px;
+            text-align: center;
+        }
+        .qr-modal .modal-content {
+            width: 300px;
+        }
+        .qr-code-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .chat-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--black);
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.3s;
+        }
+        .chat-modal.open { transform: translateX(0); }
+        .chat-header {
+            padding: 16px;
+            background: var(--dark);
+            border-bottom: 1px solid var(--yellow);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-top: calc(16px + env(safe-area-inset-top));
+        }
+        .chat-back {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--yellow);
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .message {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 14px;
+        }
+        .message.from-passenger {
+            background: var(--vk-blue);
+            color: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        .message.from-driver {
+            background: var(--yellow);
+            color: var(--black);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .message-time {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+        .chat-input-area {
+            padding: 12px;
+            background: var(--dark);
+            border-top: 1px solid var(--gray);
+            display: flex;
+            gap: 8px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+        }
+        .chat-input {
+            flex: 1;
+            background: var(--gray);
+            border: 1px solid var(--gray-light);
+            color: white;
+            padding: 12px;
+            border-radius: 24px;
+            font-size: 14px;
+        }
+        .chat-send {
+            background: var(--yellow);
+            border: none;
+            border-radius: 24px;
+            padding: 0 20px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .role-tag {
+            background: var(--gray);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 12px;
+            display: inline-block;
+            margin-left: 12px;
+        }
+        .phone-prefix {
+            display: flex;
+            align-items: center;
+            background: var(--gray);
+            border-radius: 12px;
+            border: 1px solid var(--gray-light);
+        }
+        .phone-prefix span {
+            padding: 16px 0 16px 16px;
+            color: var(--gray-light);
+            font-size: 15px;
+        }
+        .phone-prefix input {
+            border: none;
+            background: transparent;
+            padding-left: 8px;
+            flex: 1;
+        }
+        .city-status {
+            background: var(--gray);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .distance-badge {
+            background: rgba(255, 215, 0, 0.2);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 12px;
+            display: inline-block;
+            margin-left: 8px;
+        }
+        .subscription-info {
+            background: rgba(0, 200, 81, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+            border-left: 3px solid var(--green);
+        }
+        .slogan {
+            text-align: center;
+            font-size: 14px;
+            color: var(--gray-light);
+            margin-top: 16px;
+            font-style: italic;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="beta-badge">🚧 БЕТА-ВЕРСИЯ</div>
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div>НеЯша загружается...</div>
+    </div>
+
+    <div class="content">
+        <!-- Гостевая страница -->
+        <div id="guestPage" class="page">
+            <div class="card">
+                <div class="brand">
+                    <svg class="logo-svg" width="400" height="140" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="140" fill="#0a0a0a"/>
+                        <g transform="translate(10, 20)">
+                            <circle cx="50" cy="50" r="48" fill="#FFD700"/>
+                            <text x="35" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#000000">N</text>
+                            <text x="65" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#FF0000">Y</text>
+                            <path d="M 25 65 Q 50 85 75 65" stroke="#000000" stroke-width="4" fill="none" stroke-linecap="round"/>
+                        </g>
+                        <g transform="translate(120, 30)">
+                            <text x="0" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FF0000">Не</text>
+                            <text x="75" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FFFFFF">Яша</text>
+                        </g>
+                        <text x="120" y="105" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">такси без комиссии</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="card guest-instruction">
+                <h3>📱 Как сделать заказ:</h3>
+                <ol>
+                    <li>Откройте Яндекс.Такси и узнайте точную стоимость поездки</li>
+                    <li>Введите эту же цену в приложении НеЯша</li>
+                    <li>Сохраните скриншот из Яндекс.Такси — покажете его водителю при встрече</li>
+                </ol>
+                <h3>✅ Важно:</h3>
+                <ul>
+                    <li>Сервис <strong>НЕ берёт комиссию</strong> — все деньги полностью получает водитель</li>
+                    <li>Оплата только <strong>наличными или по СБП</strong> (карты не принимаются)</li>
+                    <li>Цена фиксированная, но водитель может <strong>округлить сумму в меньшую сторону</strong></li>
+                    <li>При отмене заказа предупредите водителя заранее</li>
+                </ul>
+                <h3>📝 Соглашаясь с правилами, вы подтверждаете:</h3>
+                <ul>
+                    <li>Ознакомлены и согласны с условиями сервиса</li>
+                    <li>При посадке покажете водителю скриншот из Яндекс.Такси</li>
+                </ul>
+                <div style="margin-top: 24px; text-align: center;">
+                    <button class="btn btn-primary" style="width:100%" onclick="showAuthPage()">Далее →</button>
+                </div>
+                <div class="slogan">🚕 Не Яша, но вас отвезём</div>
+            </div>
+        </div>
+
+        <!-- Страница авторизации -->
+        <div id="authPage" class="page">
+            <div class="card">
+                <div class="brand">
+                    <svg class="logo-svg" width="400" height="140" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="140" fill="#0a0a0a"/>
+                        <g transform="translate(10, 20)">
+                            <circle cx="50" cy="50" r="48" fill="#FFD700"/>
+                            <text x="35" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#000000">N</text>
+                            <text x="65" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#FF0000">Y</text>
+                            <path d="M 25 65 Q 50 85 75 65" stroke="#000000" stroke-width="4" fill="none" stroke-linecap="round"/>
+                        </g>
+                        <g transform="translate(120, 30)">
+                            <text x="0" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FF0000">Не</text>
+                            <text x="75" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FFFFFF">Яша</text>
+                        </g>
+                        <text x="120" y="105" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">такси без комиссии</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="card">
+                <div class="form-group">
+                    <label class="form-label">Я хочу войти как</label>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn" id="authRoleDriverBtn" style="flex:1; background: var(--gray); color: white;" onclick="setAuthRole('driver')">🚕 Водитель</button>
+                        <button class="btn" id="authRolePassengerBtn" style="flex:1; background: var(--gray); color: white;" onclick="setAuthRole('passenger')">👤 Пассажир</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Номер телефона</label>
+                    <div class="phone-prefix">
+                        <span>+7</span>
+                        <input type="tel" id="authPhone" placeholder="999 999 99 99" maxlength="10" inputmode="numeric">
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="width:100%" onclick="checkAndProceed()">Продолжить</button>
+                <div style="margin-top: 16px; text-align: center;">
+                    <button class="btn btn-secondary" onclick="showGuestPage()">← Назад к инструкции</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Страница регистрации -->
+        <div id="registerPage" class="page">
+            <div class="card">
+                <div class="brand">
+                    <svg class="logo-svg" width="400" height="140" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="140" fill="#0a0a0a"/>
+                        <g transform="translate(10, 20)">
+                            <circle cx="50" cy="50" r="48" fill="#FFD700"/>
+                            <text x="35" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#000000">N</text>
+                            <text x="65" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#FF0000">Y</text>
+                            <path d="M 25 65 Q 50 85 75 65" stroke="#000000" stroke-width="4" fill="none" stroke-linecap="round"/>
+                        </g>
+                        <g transform="translate(120, 30)">
+                            <text x="0" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FF0000">Не</text>
+                            <text x="75" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FFFFFF">Яша</text>
+                        </g>
+                        <text x="120" y="105" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">такси без комиссии</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="card">
+                <div class="form-group">
+                    <label class="form-label">Ваше имя</label>
+                    <input type="text" class="input" id="regName" placeholder="Как к вам обращаться">
+                </div>
+                <div id="regDriverFields" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Марка и модель авто</label>
+                        <input type="text" class="input" id="regCarModel" placeholder="Kia Rio">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Цвет авто</label>
+                        <input type="text" class="input" id="regCarColor" placeholder="Белая">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Госномер</label>
+                        <input type="text" class="input" id="regCarPlate" placeholder="А777ВС 123">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Номер лицензии (разрешение на такси)</label>
+                        <input type="text" class="input" id="regLicense" placeholder="АБ123456">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Номер водительского удостоверения</label>
+                        <input type="text" class="input" id="regDriverLicense" placeholder="99 99 123456">
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="width:100%" onclick="registerNewUser()">Зарегистрироваться</button>
+                <div style="margin-top: 16px; text-align: center;">
+                    <button class="btn btn-secondary" onclick="showAuthPage()">← Назад</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Панель водителя -->
+        <div id="driverPage" class="page">
+            <div class="card">
+                <div class="brand">
+                    <svg class="logo-svg" width="400" height="140" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="140" fill="#0a0a0a"/>
+                        <g transform="translate(10, 20)">
+                            <circle cx="50" cy="50" r="48" fill="#FFD700"/>
+                            <text x="35" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#000000">N</text>
+                            <text x="65" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#FF0000">Y</text>
+                            <path d="M 25 65 Q 50 85 75 65" stroke="#000000" stroke-width="4" fill="none" stroke-linecap="round"/>
+                        </g>
+                        <g transform="translate(120, 30)">
+                            <text x="0" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FF0000">Не</text>
+                            <text x="75" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FFFFFF">Яша</text>
+                        </g>
+                        <text x="120" y="105" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">такси без комиссии</text>
+                    </svg>
+                    <div class="role-tag">🚕 Водитель</div>
+                </div>
+            </div>
+            <div class="city-status" id="driverCityStatus">
+                <span>📍 Город: <span id="driverCityName">не определён</span></span>
+                <button class="btn btn-secondary" id="detectCityBtn" style="padding: 8px 16px; font-size: 12px;" onclick="detectDriverCity()">Определить город</button>
+            </div>
+            <div style="display:flex; gap:8px; margin-bottom:16px">
+                <button class="btn btn-secondary" style="flex:1" onclick="showDriverOrders('active')">📋 Активные заказы</button>
+                <button class="btn btn-secondary" style="flex:1" onclick="showDriverOrders('taken')">✅ Мои заказы</button>
+            </div>
+            <div id="driverOrdersContainer"></div>
+        </div>
+
+        <!-- Панель пассажира -->
+        <div id="passengerPage" class="page">
+            <div class="passenger-header" style="background:linear-gradient(135deg, #0077ff, #00c6ff); border-radius:20px; padding:28px 20px; text-align:center; margin-bottom:16px">
+                <div class="passenger-logo" style="font-size:44px">👋</div>
+                <div class="passenger-title" style="font-size:32px; font-weight:900">НеЯша</div>
+                <div class="passenger-subtitle">Такси без комиссии</div>
+                <div class="role-tag" style="background: rgba(0,0,0,0.3); margin-top: 8px;">👤 Пассажир</div>
+            </div>
+            <div style="display:flex; gap:8px; margin-bottom:16px">
+                <button class="btn btn-secondary" style="flex:1" onclick="showPassengerView('create')">📝 Создать заказ</button>
+                <button class="btn btn-secondary" style="flex:1" onclick="showPassengerView('orders')">📋 Мои заказы</button>
+            </div>
+            <div id="passengerContainer"></div>
+        </div>
+
+        <!-- Страница профиля -->
+        <div id="profilePage" class="page">
+            <div class="card">
+                <div class="brand">
+                    <svg class="logo-svg" width="400" height="140" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="400" height="140" fill="#0a0a0a"/>
+                        <g transform="translate(10, 20)">
+                            <circle cx="50" cy="50" r="48" fill="#FFD700"/>
+                            <text x="35" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#000000">N</text>
+                            <text x="65" y="45" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle" fill="#FF0000">Y</text>
+                            <path d="M 25 65 Q 50 85 75 65" stroke="#000000" stroke-width="4" fill="none" stroke-linecap="round"/>
+                        </g>
+                        <g transform="translate(120, 30)">
+                            <text x="0" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FF0000">Не</text>
+                            <text x="75" y="45" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#FFFFFF">Яша</text>
+                        </g>
+                        <text x="120" y="105" font-family="Arial, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">такси без комиссии</text>
+                    </svg>
+                    <div class="role-tag" id="profileRoleSpan" style="margin-left: auto;"></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="form-group">
+                    <label class="form-label">Имя</label>
+                    <div id="profileName" class="input" style="background: #2a2a2a;" readonly>—</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Рейтинг ⭐</label>
+                    <div id="profileRating" class="input" style="background: #2a2a2a;" readonly>—</div>
+                </div>
+                <div id="profileCarInfo" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Автомобиль</label>
+                        <div id="profileCar" class="input" style="background: #2a2a2a;" readonly>—</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Лицензия (разрешение)</label>
+                        <div id="profileLicense" class="input" style="background: #2a2a2a;" readonly>—</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Водительское удостоверение</label>
+                        <div id="profileDriverLicense" class="input" style="background: #2a2a2a;" readonly>—</div>
+                    </div>
+                    <div class="form-group" id="subscriptionInfo">
+                        <label class="form-label">Подписка</label>
+                        <div id="profileSubscription" class="input" style="background: #2a2a2a;" readonly>—</div>
+                        <button class="btn btn-primary" style="margin-top: 8px; width:100%" onclick="renewSubscription()">Продлить подписку (тест 1000₽)</button>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" style="width:100%; margin-top: 8px;" onclick="showShareQR()">📲 Поделиться</button>
+                <button class="btn btn-secondary" style="width:100%; margin-top: 8px;" onclick="logout()">🚪 Выйти</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav">
+        <button class="nav-item" id="navMain" onclick="setNav(this, 'main')">🏠<span>Главная</span></button>
+        <button class="nav-item" id="navProfile" onclick="setNav(this, 'profile')">👤<span>Профиль</span></button>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <div class="modal" id="ratingModal"><div class="modal-content" id="ratingModalContent"></div></div>
+    <!-- Модальное окно для QR-кода -->
+    <div class="qr-modal" id="qrModal">
+        <div class="modal-content">
+            <div style="font-size: 18px; margin-bottom: 12px;">📲 Поделиться</div>
+            <div class="qr-code-container" id="qrCodeContainer"></div>
+            <div style="font-size: 12px; color: #aaa; margin-top: 8px;">Отсканируйте QR-код камерой телефона</div>
+            <button class="btn btn-secondary" style="margin-top: 16px; width:100%" onclick="downloadQR()">Сохранить QR-код</button>
+            <button class="btn btn-secondary" style="margin-top: 8px; width:100%" onclick="closeQRModal()">Закрыть</button>
+        </div>
+    </div>
+    <div class="chat-modal" id="chatModal"><div class="chat-header"><button class="chat-back" onclick="closeChat()">←</button><div class="chat-title" id="chatTitle"></div></div><div class="chat-messages" id="chatMessages"></div><div class="chat-input-area"><input type="text" class="chat-input" id="chatInput" placeholder="Сообщение..." onkeypress="if(event.key==='Enter') sendMessage()"><button class="chat-send" onclick="sendMessage()">📤</button></div></div>
+
+    <script>
+        // ---------- Глобальные переменные ----------
+        const API_URL = '';
+        let currentUser = null;
+        let currentRole = null;
+        let currentDriverCity = null;
+        let currentDriverLat = null;
+        let currentDriverLon = null;
+        let currentDriverView = 'active';
+        let currentPassengerView = 'create';
+        let currentClass = 'econom';
+        let refreshOrdersInterval = null;
+        let currentChatOrderId = null;
+        let chatInterval = null;
+        let selectedRating = 0;
+        let currentRatingOrderId = null;
+        let currentRatingType = null;
+        let lastOrderIds = [];
+        let notificationPermissionGranted = false;
+        let qrCodeInstance = null;
+
+        const CITIES = ['Краснодар', 'Анапа', 'Геленджик', 'Сочи', 'Адлер', 'Новороссийск', 'Туапсе', 'Ейск', 'Кропоткин', 'Армавир'];
+
+        // ---------- Уведомления ----------
+        function requestNotificationPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(perm => {
+                    notificationPermissionGranted = (perm === 'granted');
+                });
+            }
+        }
+
+        function playNotificationSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.frequency.value = 880;
+                gainNode.gain.value = 0.3;
+                oscillator.start();
+                gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
+                oscillator.stop(audioCtx.currentTime + 0.5);
+            } catch(e) { console.log('Audio not supported'); }
+        }
+
+        function sendNotification(title, body) {
+            if (notificationPermissionGranted && document.hidden) {
+                new Notification(title, { body, icon: 'https://rentdriver.ru/favicon.ico' });
+                playNotificationSound();
+            } else if (!document.hidden) {
+                showToast(body);
+            }
+        }
+
+        // ---------- QR-код ----------
+        function showShareQR() {
+            const modal = document.getElementById('qrModal');
+            const container = document.getElementById('qrCodeContainer');
+            container.innerHTML = '';
+            const url = window.location.origin;
+            qrCodeInstance = new QRCode(container, {
+                text: url,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            modal.classList.add('show');
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').classList.remove('show');
+        }
+
+        function downloadQR() {
+            const canvas = document.querySelector('#qrCodeContainer canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = 'neyasha_qr.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            } else {
+                showToast('QR-код ещё не сгенерирован');
+            }
+        }
+
+        // ---------- Инициализация ----------
+        window.onload = () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loading');
+                if (loader) loader.classList.add('hidden');
+            }, 1000);
+            const savedUser = localStorage.getItem('neusha_user');
+            if (savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    if (currentUser && currentUser.role) {
+                        currentRole = currentUser.role;
+                        if (currentRole === 'driver') {
+                            initDriverInterface();
+                            requestNotificationPermission();
+                        }
+                        else if (currentRole === 'passenger') initPassengerInterface();
+                        else showGuestPage();
+                    } else showGuestPage();
+                } catch(e) { showGuestPage(); }
+            } else {
+                showGuestPage();
+            }
+        };
+
+        function initDriverInterface() {
+            showDriverInterface();
+            refreshUserData();
+        }
+
+        function initPassengerInterface() {
+            showPassengerInterface();
+            refreshUserData();
+        }
+
+        // ---------- Навигация ----------
+        function showGuestPage() {
+            hideAllPages();
+            document.getElementById('guestPage').classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        }
+
+        function showAuthPage() {
+            hideAllPages();
+            document.getElementById('authPage').classList.add('active');
+            setAuthRole('driver');
+            document.getElementById('authPhone').value = '';
+        }
+
+        function showRegisterPage(role, phone) {
+            hideAllPages();
+            document.getElementById('registerPage').classList.add('active');
+            window.pendingRegRole = role;
+            window.pendingRegPhone = phone;
+            const driverFields = document.getElementById('regDriverFields');
+            driverFields.style.display = role === 'driver' ? 'block' : 'none';
+            document.getElementById('regName').value = '';
+            if (role === 'driver') {
+                document.getElementById('regCarModel').value = '';
+                document.getElementById('regCarColor').value = '';
+                document.getElementById('regCarPlate').value = '';
+                document.getElementById('regLicense').value = '';
+                document.getElementById('regDriverLicense').value = '';
+            }
+        }
+
+        function showDriverInterface() {
+            hideAllPages();
+            document.getElementById('driverPage').classList.add('active');
+            document.getElementById('navMain').classList.add('active');
+            loadDriverCityFromStorage();
+            loadDriverOrders();
+            if (refreshOrdersInterval) clearInterval(refreshOrdersInterval);
+            refreshOrdersInterval = setInterval(() => {
+                loadDriverOrders(true);
+            }, 5000);
+        }
+
+        function showPassengerInterface() {
+            hideAllPages();
+            document.getElementById('passengerPage').classList.add('active');
+            document.getElementById('navMain').classList.add('active');
+            showPassengerView(currentPassengerView);
+            if (refreshOrdersInterval) clearInterval(refreshOrdersInterval);
+            refreshOrdersInterval = setInterval(() => {
+                if (currentPassengerView === 'orders') loadPassengerOrders();
+            }, 5000);
+        }
+
+        function showProfilePage() {
+            hideAllPages();
+            document.getElementById('profilePage').classList.add('active');
+            document.getElementById('navProfile').classList.add('active');
+            if (currentUser) {
+                document.getElementById('profileName').innerText = currentUser.name;
+                document.getElementById('profileRating').innerText = currentUser.rating ? currentUser.rating.toFixed(1) : '5.0';
+                const roleSpan = document.getElementById('profileRoleSpan');
+                if (roleSpan) roleSpan.innerText = currentRole === 'driver' ? '🚕 Водитель' : '👤 Пассажир';
+                if (currentRole === 'driver') {
+                    document.getElementById('profileCarInfo').style.display = 'block';
+                    document.getElementById('profileCar').innerText = currentUser.car ? `${currentUser.car.color} ${currentUser.car.model}, ${currentUser.car.plate}` : 'не указано';
+                    document.getElementById('profileLicense').innerText = currentUser.license || 'не указано';
+                    document.getElementById('profileDriverLicense').innerText = currentUser.driver_license || 'не указано';
+                    let subText = '';
+                    if (currentUser.free_orders > 0) {
+                        subText = `Бесплатные заказы: ${currentUser.free_orders} (осталось)`;
+                    } else if (currentUser.subscription_until && new Date(currentUser.subscription_until) > new Date()) {
+                        subText = `Подписка активна до ${new Date(currentUser.subscription_until).toLocaleDateString()}`;
+                    } else {
+                        subText = `Нет активной подписки. Оформите за 1000 ₽/мес.`;
+                    }
+                    document.getElementById('profileSubscription').innerText = subText;
+                } else {
+                    document.getElementById('profileCarInfo').style.display = 'none';
+                }
+            }
+        }
+
+        function hideAllPages() {
+            const pages = ['guestPage', 'authPage', 'registerPage', 'driverPage', 'passengerPage', 'profilePage'];
+            pages.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('active');
+            });
+        }
+
+        function setNav(btn, page) {
+            if (page === 'profile') {
+                if (!currentUser) { showToast('Сначала войдите'); showAuthPage(); return; }
+                showProfilePage();
+            } else if (page === 'main') {
+                if (!currentUser) showGuestPage();
+                else if (currentRole === 'driver') showDriverInterface();
+                else if (currentRole === 'passenger') showPassengerInterface();
+            }
+        }
+
+        // ---------- Геолокация водителя ----------
+        function loadDriverCityFromStorage() {
+            const savedCity = localStorage.getItem('driver_city');
+            const savedLat = localStorage.getItem('driver_lat');
+            const savedLon = localStorage.getItem('driver_lon');
+            if (savedCity && savedLat && savedLon) {
+                currentDriverCity = savedCity;
+                currentDriverLat = parseFloat(savedLat);
+                currentDriverLon = parseFloat(savedLon);
+                document.getElementById('driverCityName').innerText = currentDriverCity;
+                document.getElementById('detectCityBtn').innerText = 'Обновить город';
+            } else {
+                document.getElementById('driverCityName').innerText = 'не определён';
+                document.getElementById('detectCityBtn').innerText = 'Определить город';
+                currentDriverCity = null;
+            }
+        }
+
+        async function detectDriverCity() {
+            if (!navigator.geolocation) {
+                showToast('Геолокация не поддерживается вашим браузером');
+                return;
+            }
+            showToast('Определение местоположения...');
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                try {
+                    const res = await fetch(`${API_URL}/index.php`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'getCityFromCoords', lat, lon })
+                    });
+                    const data = await res.json();
+                    if (data.success && data.city) {
+                        currentDriverCity = data.city;
+                        currentDriverLat = lat;
+                        currentDriverLon = lon;
+                        localStorage.setItem('driver_city', currentDriverCity);
+                        localStorage.setItem('driver_lat', lat);
+                        localStorage.setItem('driver_lon', lon);
+                        document.getElementById('driverCityName').innerText = currentDriverCity;
+                        document.getElementById('detectCityBtn').innerText = 'Обновить город';
+                        showToast(`Ваш город: ${currentDriverCity}`);
+                        loadDriverOrders();
+                    } else {
+                        showToast('Не удалось определить город');
+                    }
+                } catch(e) {
+                    showToast('Ошибка связи с сервером');
+                }
+            }, (error) => {
+                console.error(error);
+                showToast('Не удалось получить геолокацию. Разрешите доступ.');
+            });
+        }
+
+        // ---------- Авторизация ----------
+        let pendingAuthRole = 'driver';
+
+        function setAuthRole(role) {
+            pendingAuthRole = role;
+            const driverBtn = document.getElementById('authRoleDriverBtn');
+            const passengerBtn = document.getElementById('authRolePassengerBtn');
+            if (role === 'driver') {
+                driverBtn.style.background = '#ffd700';
+                driverBtn.style.color = '#0a0a0a';
+                passengerBtn.style.background = 'var(--gray)';
+                passengerBtn.style.color = 'white';
+            } else {
+                passengerBtn.style.background = '#ffd700';
+                passengerBtn.style.color = '#0a0a0a';
+                driverBtn.style.background = 'var(--gray)';
+                driverBtn.style.color = 'white';
+            }
+        }
+
+        function normalizePhoneFront(phoneDigits) {
+            let digits = phoneDigits.replace(/\D/g, '');
+            if (digits.length !== 10) return null;
+            return '+7' + digits;
+        }
+
+        async function checkAndProceed() {
+            const phoneDigits = document.getElementById('authPhone').value.trim();
+            if (!phoneDigits || phoneDigits.length !== 10 || !/^\d+$/.test(phoneDigits)) {
+                showToast('Введите 10 цифр номера телефона (например, 9123456789)');
+                return;
+            }
+            const phone = normalizePhoneFront(phoneDigits);
+            if (!phone) { showToast('Неверный формат номера'); return; }
+            const role = pendingAuthRole;
+            showToast('Проверяем...');
+            try {
+                const res = await fetch(`${API_URL}/index.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'checkUser', role, phone })
+                });
+                const data = await res.json();
+                if (data.status === 'exists') {
+                    currentUser = data.user;
+                    currentRole = role;
+                    localStorage.setItem('neusha_user', JSON.stringify(currentUser));
+                    if (role === 'driver') {
+                        initDriverInterface();
+                        requestNotificationPermission();
+                    } else initPassengerInterface();
+                } else if (data.status === 'wrong_role') {
+                    showToast(`Этот номер зарегистрирован как ${data.roleExists === 'driver' ? 'водитель' : 'пассажир'}. Войдите под своей ролью.`);
+                } else if (data.status === 'not_exists') {
+                    showRegisterPage(role, phone);
+                } else {
+                    showToast('Ошибка сервера');
+                }
+            } catch(e) {
+                console.error(e);
+                showToast('Ошибка связи с сервером');
+            }
+        }
+
+        async function registerNewUser() {
+            const name = document.getElementById('regName').value.trim();
+            if (!name) { showToast('Введите имя'); return; }
+            const role = window.pendingRegRole;
+            const phone = window.pendingRegPhone;
+            let car = null;
+            let license = null;
+            let driverLicense = null;
+            if (role === 'driver') {
+                const model = document.getElementById('regCarModel').value.trim();
+                const color = document.getElementById('regCarColor').value.trim();
+                const plate = document.getElementById('regCarPlate').value.trim();
+                if (!model || !color || !plate) { showToast('Заполните данные об авто'); return; }
+                car = { model, color, plate };
+                license = document.getElementById('regLicense').value.trim();
+                driverLicense = document.getElementById('regDriverLicense').value.trim();
+                if (!license) { showToast('Введите номер лицензии (разрешение на такси)'); return; }
+                if (!driverLicense) { showToast('Введите номер водительского удостоверения'); return; }
+            }
+            try {
+                const res = await fetch(`${API_URL}/index.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'register', role, phone, name, car, license, driverLicense })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    currentUser = data.user;
+                    currentRole = role;
+                    localStorage.setItem('neusha_user', JSON.stringify(currentUser));
+                    if (role === 'driver') {
+                        initDriverInterface();
+                        requestNotificationPermission();
+                    } else initPassengerInterface();
+                } else {
+                    showToast(data.error || 'Ошибка регистрации');
+                }
+            } catch(e) {
+                showToast('Ошибка сервера');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('neusha_user');
+            localStorage.removeItem('driver_city');
+            localStorage.removeItem('driver_lat');
+            localStorage.removeItem('driver_lon');
+            currentUser = null;
+            currentRole = null;
+            currentDriverCity = null;
+            if (refreshOrdersInterval) clearInterval(refreshOrdersInterval);
+            if (chatInterval) clearInterval(chatInterval);
+            showGuestPage();
+            showToast('Вы вышли из системы');
+        }
+
+        async function refreshUserData() {
+            if (!currentUser) return;
+            try {
+                const res = await fetch(`${API_URL}/index.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'getUser', role: currentRole, phone: currentUser.phone })
+                });
+                const data = await res.json();
+                if (data.success && data.user) {
+                    currentUser = data.user;
+                    localStorage.setItem('neusha_user', JSON.stringify(currentUser));
+                }
+            } catch(e) {}
+        }
+
+        async function renewSubscription() {
+            if (currentRole !== 'driver') return;
+            showToast('Оформление подписки (тестовый режим)...');
+            try {
+                const res = await fetch(`${API_URL}/index.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'renewSubscription', driverId: currentUser.id })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Подписка продлена на 30 дней!');
+                    await refreshUserData();
+                    showProfilePage();
+                } else {
+                    showToast(data.error || 'Ошибка');
+                }
+            } catch(e) { showToast('Ошибка'); }
+        }
+
+        // ---------- Функции водителя ----------
+        async function loadDriverOrders(checkForNew = false) {
+            if (!currentUser || !currentDriverCity) {
+                const container = document.getElementById('driverOrdersContainer');
+                if (container) container.innerHTML = '<div class="empty-state">📍 Сначала определите ваш город (кнопка выше)</div>';
+                return;
+            }
+            const container = document.getElementById('driverOrdersContainer');
+            container.innerHTML = '<div class="empty-state">🔄 Загрузка...</div>';
+            try {
+                const res = await fetch(`${API_URL}/index.php`);
+                const data = await res.json();
+                let orders = data.orders || [];
+                if (currentDriverView === 'active') {
+                    orders = orders.filter(o => o.status === 'active' && o.city === currentDriverCity);
+                    if (checkForNew && lastOrderIds.length > 0) {
+                        const newOrderIds = orders.map(o => o.id).filter(id => !lastOrderIds.includes(id));
+                        if (newOrderIds.length > 0) {
+                            sendNotification('Новый заказ!', `Появился новый заказ в городе ${currentDriverCity}`);
+                        }
+                    }
+                    lastOrderIds = orders.map(o => o.id);
+                    if (orders.length === 0) { container.innerHTML = '<div class="empty-state">📭 Нет активных заказов в вашем городе</div>'; return; }
+                    container.innerHTML = orders.map(order => {
+                        let distanceText = '';
+                        if (order.from_lat && order.from_lon && currentDriverLat && currentDriverLon) {
+                            const dist = getDistanceFromLatLonInKm(currentDriverLat, currentDriverLon, order.from_lat, order.from_lon);
+                            const minutes = Math.round(dist * 2);
+                            distanceText = `<span class="distance-badge">🚗 ${dist.toFixed(1)} км, ~${minutes} мин</span>`;
+                        }
+                        let classText = '';
+                        if (order.class === 'econom') classText = '🚕 Эконом';
+                        else if (order.class === 'comfort') classText = '🚗 Комфорт';
+                        else if (order.class === 'comfortplus') classText = '⭐ Комфорт+';
+                        else if (order.class === 'intercity') classText = '🌍 Межгород';
+                        else classText = '🚕 Эконом';
+                        return `
+                            <div class="post">
+                                <div class="post-header">
+                                    <div class="user-info">
+                                        <div class="user-avatar">👤</div>
+                                        <div>
+                                            <strong>${escapeHtml(order.userName)}</strong><br>
+                                            <span style="font-size:11px">⭐ ${order.passengerRating || 5.0}</span><br>
+                                            <span style="font-size:10px">${classText}</span>
+                                            ${distanceText}
+                                        </div>
+                                    </div>
+                                    <div class="post-price">${order.price} ₽</div>
+                                </div>
+                                <div class="route-point"><div class="route-dot"></div>${escapeHtml(order.from)}</div>
+                                <div class="route-point"><div class="route-dot to"></div>${escapeHtml(order.to)}</div>
+                                ${order.comment ? `<div class="comment-box">💬 ${escapeHtml(order.comment)}</div>` : ''}
+                                <div class="actions">
+                                    <button class="btn btn-secondary" onclick="skipOrder('${order.id}')">Пропустить</button>
+                                    <button class="btn btn-primary" onclick="acceptOrder('${order.id}')">✅ Принять заказ</button>
+                                    ${order.from_lat && order.from_lon ? `<button class="btn btn-secondary" onclick="openNavigator(${order.from_lat}, ${order.from_lon})">🧭 Маршрут</button>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    orders = orders.filter(o => o.status === 'taken' && o.driverId === currentUser.id);
+                    if (orders.length === 0) { container.innerHTML = '<div class="empty-state">✅ Нет принятых заказов</div>'; return; }
+                    container.innerHTML = orders.map(order => {
+                        let classText = '';
+                        if (order.class === 'econom') classText = '🚕 Эконом';
+                        else if (order.class === 'comfort') classText = '🚗 Комфорт';
+                        else if (order.class === 'comfortplus') classText = '⭐ Комфорт+';
+                        else if (order.class === 'intercity') classText = '🌍 Межгород';
+                        else classText = '🚕 Эконом';
+                        return `
+                            <div class="post">
+                                <div class="post-header"><div><strong>${escapeHtml(order.userName)}</strong><br>⭐ ${order.passengerRating || 5.0}<br><span style="font-size:10px">${classText}</span></div><div class="post-price">${order.price} ₽</div></div>
+                                <div class="route-point"><div class="route-dot"></div>${escapeHtml(order.from)}</div>
+                                <div class="route-point"><div class="route-dot to"></div>${escapeHtml(order.to)}</div>
+                                <div class="actions">
+                                    <button class="btn btn-chat" onclick="openChat('${order.id}')">💬 Чат</button>
+                                    <button class="btn btn-green" onclick="completeOrder('${order.id}')">✅ Завершить поездку</button>
+                                    ${order.from_lat && order.from_lon ? `<button class="btn btn-secondary" onclick="openNavigator(${order.from_lat}, ${order.from_lon})">🧭 Маршрут</button>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } catch(e) { container.innerHTML = '<div class="empty-state">⚠️ Ошибка загрузки</div>'; }
+        }
+
+        function showDriverOrders(view) {
+            currentDriverView = view;
+            loadDriverOrders();
+        }
+
+        async function acceptOrder(orderId) {
+            if (currentUser.free_orders <= 0 && (!currentUser.subscription_until || new Date(currentUser.subscription_until) < new Date())) {
+                showToast('У вас закончились бесплатные заказы. Оформите подписку в профиле за 1000 ₽/мес.');
+                return;
+            }
+            try {
+                const resCheck = await fetch(`${API_URL}/index.php`);
+                const data = await resCheck.json();
+                const hasTaken = (data.orders || []).some(o => o.driverId === currentUser.id && o.status === 'taken');
+                if (hasTaken) {
+                    showToast('У вас уже есть активный заказ. Завершите его, прежде чем брать новый.');
+                    return;
+                }
+                const res = await fetch(`${API_URL}/index.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'accept', orderId, driverId: currentUser.id, driverName: currentUser.name, driverCar: currentUser.car })
+                });
+                const acceptData = await res.json();
+                if (acceptData.success) {
+                    showToast('✅ Заказ принят!');
+                    await refreshUserData();
+                    loadDriverOrders();
+                } else {
+                    showToast(acceptData.error || 'Ошибка');
+                }
+            } catch(e) { showToast('Ошибка'); }
+        }
+
+        async function skipOrder(orderId) {
+            try {
+                await fetch(`${API_URL}/index.php`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: orderId })
+                });
+                loadDriverOrders();
+            } catch(e) {}
+        }
+
+        async function completeOrder(orderId) {
+            try {
+                const res = await fetch(`${API_URL}/index.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'complete', orderId })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    currentRatingOrderId = orderId;
+                    currentRatingType = 'driver';
+                    showRatingModal();
+                    loadDriverOrders();
+                    if (currentPassengerView === 'orders') loadPassengerOrders();
+                }
+            } catch(e) { showToast('Ошибка'); }
+        }
+
+        // ---------- Функции пассажира ----------
+        function showPassengerView(view) {
+            currentPassengerView = view;
+            const container = document.getElementById('passengerContainer');
+            if (view === 'create') {
+                container.innerHTML = `
+                    <div class="card">
+                        <div class="form-group"><label class="form-label">🌆 Город</label><select class="select" id="citySelect">${CITIES.map(c => `<option value="${c}">${c}</option>`).join('')}</select></div>
+                        <div class="form-group"><label class="form-label">Откуда</label><input type="text" class="input" id="fromAddr" placeholder="Улица, дом"></div>
+                        <div class="form-group"><label class="form-label">Куда</label><input type="text" class="input" id="toAddr" placeholder="Улица, дом"></div>
+                    </div>
+                    <div class="card">
+                        <label class="form-label">Класс авто</label>
+                        <div class="class-selector">
+                            <button class="class-btn active" onclick="setClass('econom', this)"><span class="emoji">🚕</span>Эконом</button>
+                            <button class="class-btn" onclick="setClass('comfort', this)"><span class="emoji">🚗</span>Комфорт</button>
+                            <button class="class-btn" onclick="setClass('comfortplus', this)"><span class="emoji">⭐</span>Комфорт+</button>
+                            <button class="class-btn" onclick="setClass('intercity', this)"><span class="emoji">🌍</span>Межгород</button>
+                        </div>
+                        <div class="form-group"><label class="form-label">💰 Цена (₽)</label><input type="number" class="input" id="priceInput" placeholder="300" min="50"></div>
+                        <div class="form-group"><label class="form-label">💬 Комментарий</label><textarea class="textarea" id="commentInput" rows="2" placeholder="Подъезд, этаж, домофон..."></textarea></div>
+                        <button class="btn btn-primary" style="width:100%" onclick="createOrder()">Создать заказ</button>
+                    </div>
+                `;
+            } else {
+                loadPassengerOrders();
+            }
+        }
+
+        async function loadPassengerOrders() {
+            const container = document.getElementById('passengerContainer');
+            container.innerHTML = '<div class="empty-state">🔄 Загрузка...</div>';
+            try {
+                const res = await fetch(`${API_URL}/index.php`);
+                const data = await res.json();
+                const orders = (data.orders || []).filter(o => o.userId === currentUser.id).reverse();
+                if (orders.length === 0) { container.innerHTML = '<div class="empty-state">📭 У вас нет заказов</div>'; return; }
+                container.innerHTML = orders.map(order => {
+                    let classText = '';
+                    if (order.class === 'econom') classText = '🚕 Эконом';
+                    else if (order.class === 'comfort') classText = '🚗 Комфорт';
+                    else if (order.class === 'comfortplus') classText = '⭐ Комфорт+';
+                    else if (order.class === 'intercity') classText = '🌍 Межгород';
+                    else classText = '🚕 Эконом';
+                    return `
+                        <div class="post">
+                            <div class="post-header"><div><strong>${order.status === 'active' ? '⏳ Ожидает водителя' : order.status === 'taken' ? '✅ Вас взяли!' : '🏁 Завершён'}</strong><br><span style="font-size:10px">${classText}</span></div><div class="post-price">${order.price} ₽</div></div>
+                            <div class="route-point"><div class="route-dot"></div>${escapeHtml(order.from)}</div>
+                            <div class="route-point"><div class="route-dot to"></div>${escapeHtml(order.to)}</div>
+                            ${order.status === 'taken' && order.driverInfo ? `<div class="driver-info">🚗 К вам едет:<br><strong>${escapeHtml(order.driverInfo.name)}</strong> ⭐ ${order.driverInfo.rating}<br>${escapeHtml(order.driverInfo.car.color)} ${escapeHtml(order.driverInfo.car.model)}, ${escapeHtml(order.driverInfo.car.plate)}</div>` : ''}
+                            ${order.status === 'taken' ? `<button class="btn btn-chat" style="width:100%" onclick="openChat('${order.id}')">💬 Чат с водителем</button>` : ''}
+                            ${order.status === 'active' ? `<button class="btn btn-secondary" style="width:100%" onclick="cancelOrder('${order.id}')">Отменить заказ</button>` : ''}
+                            ${order.status === 'completed' && !order.rated_by_passenger ? `<button class="btn btn-primary" style="width:100%; margin-top:8px" onclick="rateDriver('${order.id}')">⭐ Оценить поездку</button>` : ''}
+                        </div>
+                    `;
+                }).join('');
+            } catch(e) { container.innerHTML = '<div class="empty-state">⚠️ Ошибка</div>'; }
+        }
+
+        async function createOrder() {
+            const city = document.getElementById('citySelect').value;
+            const from = document.getElementById('fromAddr').value.trim();
+            const to = document.getElementById('toAddr').value.trim();
+            const price = document.getElementById('priceInput').value;
+            const comment = document.getElementById('commentInput').value.trim();
+            if (!from || !to || !price) { showToast('Заполните все поля'); return; }
+            try {
+                const res = await fetch(`${API_URL}/index.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'create', city, from, to, price: parseInt(price), class: currentClass, comment, userId: currentUser.id, userName: currentUser.name })
+                });
+                const data = await res.json();
+                if (data.success) { showToast('✅ Заказ создан!'); showPassengerView('orders'); }
+                else { showToast(data.error || 'Ошибка'); }
+            } catch(e) { showToast('Ошибка'); }
+        }
+
+        async function cancelOrder(orderId) {
+            if (confirm('Отменить заказ?')) {
+                await fetch(`${API_URL}/index.php`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: orderId })
+                });
+                loadPassengerOrders();
+            }
+        }
+
+        function rateDriver(orderId) {
+            currentRatingOrderId = orderId;
+            currentRatingType = 'passenger';
+            showRatingModal();
+        }
+
+        // ---------- Общие функции ----------
+        function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+        function deg2rad(deg) { return deg * (Math.PI/180); }
+
+        function openNavigator(lat, lon) {
+            const url = `yandexnavi://build_route_on_map?lat_to=${lat}&lon_to=${lon}`;
+            window.location.href = url;
+            setTimeout(() => {
+                window.open(`https://yandex.ru/maps/?rtext=~${lat},${lon}&rtt=auto`, '_blank');
+            }, 500);
+        }
+
+        async function openChat(orderId) {
+            currentChatOrderId = orderId;
+            document.getElementById('chatTitle').innerHTML = `💬 Чат`;
+            document.getElementById('chatModal').classList.add('open');
+            await refreshChat();
+            if (chatInterval) clearInterval(chatInterval);
+            chatInterval = setInterval(refreshChat, 3000);
+        }
+
+        async function refreshChat() {
+            if (!currentChatOrderId) return;
+            try {
+                const res = await fetch(`${API_URL}/index.php`);
+                const data = await res.json();
+                const order = data.orders.find(o => o.id === currentChatOrderId);
+                if (order && order.chat) {
+                    const container = document.getElementById('chatMessages');
+                    container.innerHTML = order.chat.map(msg => `<div class="message ${msg.from === 'passenger' ? 'from-passenger' : 'from-driver'}">${escapeHtml(msg.text)}<div class="message-time">${new Date(msg.time * 1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div></div>`).join('');
+                    container.scrollTop = container.scrollHeight;
+                }
+            } catch(e) {}
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text || !currentChatOrderId) return;
+            input.value = '';
+            const from = currentRole === 'driver' ? 'driver' : 'passenger';
+            try {
+                await fetch(`${API_URL}/index.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'sendMessage', orderId: currentChatOrderId, message: { from, text, time: Math.floor(Date.now() / 1000) } })
+                });
+                refreshChat();
+            } catch(e) {}
+        }
+
+        function closeChat() {
+            document.getElementById('chatModal').classList.remove('open');
+            if (chatInterval) { clearInterval(chatInterval); chatInterval = null; }
+            currentChatOrderId = null;
+        }
+
+        function showRatingModal() {
+            selectedRating = 0;
+            const modal = document.getElementById('ratingModal');
+            const content = document.getElementById('ratingModalContent');
+            content.innerHTML = `
+                <div style="font-size:20px; margin-bottom:16px">⭐ Оцените поездку</div>
+                <div class="rating-stars" id="ratingStars">
+                    ${[1,2,3,4,5].map(s => `<span class="star" data-rating="${s}">★</span>`).join('')}
+                </div>
+                <button class="btn btn-primary" style="margin-top:16px" onclick="submitRating()">Отправить оценку</button>
+            `;
+            document.querySelectorAll('.star').forEach(star => {
+                star.addEventListener('click', () => {
+                    selectedRating = parseInt(star.dataset.rating);
+                    document.querySelectorAll('.star').forEach(s => {
+                        if (parseInt(s.dataset.rating) <= selectedRating) s.classList.add('active');
+                        else s.classList.remove('active');
+                    });
+                });
+            });
+            modal.classList.add('show');
+        }
+
+        async function submitRating() {
+            if (selectedRating === 0) { showToast('Выберите оценку'); return; }
+            try {
+                await fetch(`${API_URL}/index.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'rate', orderId: currentRatingOrderId, rating: selectedRating, raterRole: currentRatingType })
+                });
+                document.getElementById('ratingModal').classList.remove('show');
+                showToast('Спасибо за оценку!');
+                if (currentRole === 'driver') loadDriverOrders();
+                else loadPassengerOrders();
+                refreshUserData();
+            } catch(e) {}
+        }
+
+        function setClass(cls, btn) {
+            currentClass = cls;
+            document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+    </script>
+</body>
+</html>            background: var(--red);
             color: white;
             padding: 4px 12px;
             font-size: 12px;
